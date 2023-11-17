@@ -3,10 +3,11 @@ import { config } from "dotenv";
 import connectDb from "./config/db";
 import usersRouter from "./routes/users.route.ts";
 import companyRouter from "./routes/company.route.ts";
-
+import cors from "cors";
 config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 const mongoose_url: any = process.env.MONGO_URL;
 
 connectDb(mongoose_url);

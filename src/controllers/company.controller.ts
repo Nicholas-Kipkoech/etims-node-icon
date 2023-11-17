@@ -54,4 +54,6 @@ const fetchCompanys = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
+
+
 export default { createCompany, fetchCompanys };
