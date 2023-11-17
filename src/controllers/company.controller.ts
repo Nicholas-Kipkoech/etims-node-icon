@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import Company from "../databases/companies";
+import users from "../databases/users";
 
 interface AuthenticatedRequest extends Request {
   user?: { email: string };
@@ -54,6 +55,31 @@ const fetchCompanys = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
+const fetchCompanyUsers = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { email, role }: any = req.user;
 
+    if (role !== "Admin") {
+      return res.status(403).json({
+        error: "Only admin can access this resource!!",
+      });
+    }
 
-export default { createCompany, fetchCompanys };
+    const admin = await users.CompanyUser.findOne({ email });
+
+    if (!admin) {
+      return res.status(403).json({
+        error: "Admin not found!!",
+      });
+    }
+    const companyId = admin.company;
+    const companyUsers = await users.CompanyUser.find({ company: companyId });
+
+    return res.status(200).json({ users: companyUsers });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+export default { createCompany, fetchCompanys, fetchCompanyUsers };

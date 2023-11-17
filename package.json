@@ -5,9 +5,7 @@
   "main": "index.ts",
   "type": "commonjs",
   "scripts": {
-    "dev": "concurrently \"npm run start:dev\" \"npm run start:ts-node\"",
-    "start:dev": "nodemon src/index.ts",
-    "start:ts-node": "ts-node --transpile-only src/index.ts"
+    "start": "nodemon --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +13,6 @@
   "dependencies": {
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.14",
     "@types/typescript": "^2.0.0",
     "bcrypt": "^5.1.1",
@@ -32,7 +29,6 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.16",
     "@types/node": "^20.9.0",
-    "concurrently": "^8.2.2",
     "typescript": "^5.2.2"
   }
 }
