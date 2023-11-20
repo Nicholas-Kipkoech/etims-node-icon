@@ -108,4 +108,40 @@ const userLogin = async (req, res) => {
   }
 };
 
-export default { createCompanyUser, userLogin, createSuperAdmin };
+const updateUser = async (req, res) => {
+  try {
+    const { email } = req.user; // Assuming the user's email is in the req.user object
+    const { name, newPassword } = req.body;
+
+    // Fetch the user from the database
+    const user = await Users.User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update the user's information
+    user.name = name;
+
+    // If a new password is provided, update the password
+    if (newPassword) {
+      user.password = await passHash.encrypt(newPassword);
+    }
+
+    // Save the updated user information
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      updatedUser: {
+        email: user.email,
+        name: user.name,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { createCompanyUser, userLogin, createSuperAdmin, updateUser };
