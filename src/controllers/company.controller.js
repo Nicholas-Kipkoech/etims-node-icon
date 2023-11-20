@@ -90,21 +90,31 @@ const fetchCompanyUsers = async (req, res) => {
   try {
     const { email, role } = req.user;
 
-    if (role !== "Admin") {
+    if (role !== "Admin" && role !== "Superadmin") {
       return res.status(403).json({
-        error: "Only admin can access this resource!!",
+        error: "Only admin or superadmin can access this resource!!",
       });
     }
 
-    const admin = await users.CompanyUser.findOne({ email });
+    let companyUsers;
 
-    if (!admin) {
-      return res.status(403).json({
-        error: "Admin not found!!",
+    if (role === "Superadmin") {
+      // If the user is a superadmin, fetch all company users
+      companyUsers = await users.CompanyUser.find({});
+    } else {
+      // If the user is an admin, check if they are an admin in any company
+      const isAdmin = await Company.findOne({
+        admins: { $elemMatch: { email } },
       });
+
+      if (!isAdmin) {
+        return res.status(403).json({
+          error: "Access forbidden. You are not an admin of any company.",
+        });
+      }
+      const companyId = isAdmin?._id;
+      companyUsers = await users.CompanyUser.find({ company: companyId });
     }
-    const companyId = admin.company;
-    const companyUsers = await users.CompanyUser.find({ company: companyId });
 
     return res.status(200).json({ users: companyUsers });
   } catch (error) {
