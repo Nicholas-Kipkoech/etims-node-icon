@@ -1,6 +1,8 @@
 import Company from "../databases/companies.js";
 import users from "../databases/users.js";
 
+import { sendEmail } from "../utils/sendEmail.js";
+
 const createCompany = async (req, res) => {
   try {
     const {
@@ -9,7 +11,7 @@ const createCompany = async (req, res) => {
       status,
       logo_url,
       company_email,
-      superadmin_email,
+      admins,
     } = req.body;
     const { email, role } = req.user;
     if (role !== "Superadmin") {
@@ -17,16 +19,44 @@ const createCompany = async (req, res) => {
         .status(403)
         .json({ error: "Only superadmin can create a company!!" });
     }
+
+    //generate passwords for each admins
+
+    const adminWithPasswords = await Promise.all(
+      admins?.map(async (adminEmail) => {
+        const password = Math.random().toString(36).slice(-8);
+        return { email: adminEmail, password: password };
+      })
+    );
+
     const newCompany = new Company({
       company_name,
       company_code,
       status,
       logo_url,
       company_email,
-      superadmin_email,
+      admins: adminWithPasswords,
       created_by: email,
     });
     await newCompany.save();
+
+    adminWithPasswords.forEach((admin) => {
+      users.User.create({
+        name: null,
+        role: "Admin",
+        email: admin.email,
+        password: admin.password,
+      });
+    });
+
+    adminWithPasswords.forEach((admin) => {
+      sendEmail(
+        admin?.email,
+        "Admin Registration",
+        `Your account was created by ${company_name} and your password is ${admin?.password} Please login and update your password as soon as possible!!`
+      );
+    });
+
     return res.status(200).json({ company: newCompany });
   } catch (error) {
     return res.status(500).json(error);

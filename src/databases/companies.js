@@ -6,7 +6,7 @@ const companySchema = new mongoose.Schema({
   status: { type: String, required: false },
   logo_url: { type: String, required: false },
   company_email: { type: String, required: false },
-  superadmin_email: { type: String, required: false },
+  admins: { type: Array, required: false },
   created_by: { type: String, required: true },
   created_at: { type: Date, default: Date.now() },
 });
