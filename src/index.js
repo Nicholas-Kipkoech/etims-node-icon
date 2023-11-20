@@ -16,7 +16,7 @@ connectDb(mongoose_url);
 const port = process.env.PORT;
 
 app.get("/", (res) => {
-  return res.statusCode(200).json({ message: "Api is live...." });
+  return res.status(200).json({ message: "Api is live...." });
 });
 
 app.use("/api/user", usersRouter);
