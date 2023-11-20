@@ -1,5 +1,6 @@
 import Company from "../databases/companies.js";
 import users from "../databases/users.js";
+import passHash from "../utils/passHash.js";
 
 import { sendEmail } from "../utils/sendEmail.js";
 
@@ -25,7 +26,12 @@ const createCompany = async (req, res) => {
     const adminWithPasswords = await Promise.all(
       admins?.map(async (adminEmail) => {
         const password = Math.random().toString(36).slice(-8);
-        return { email: adminEmail, password: password };
+        const hashedPassword = await passHash.encrypt(password);
+        return {
+          email: adminEmail,
+          password: password,
+          hashedPassword: hashedPassword,
+        };
       })
     );
 
@@ -45,7 +51,7 @@ const createCompany = async (req, res) => {
         name: null,
         role: "Admin",
         email: admin.email,
-        password: admin.password,
+        password: admin.hashedPassword,
       });
     });
 
