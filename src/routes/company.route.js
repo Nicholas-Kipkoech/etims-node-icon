@@ -1,6 +1,6 @@
 import express from "express";
-import companyController from "../controllers/company.controller.ts";
-import authenticateJWT from "../middlewares/middleware.ts";
+import companyController from "../controllers/company.controller.js";
+import authenticateJWT from "../middlewares/middleware.js";
 
 const companyRouter = express.Router();
 

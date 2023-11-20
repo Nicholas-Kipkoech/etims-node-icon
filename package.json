@@ -2,10 +2,10 @@
   "name": "etims-node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
-  "type": "commonjs",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon --exec ts-node src/index.ts"
+    "start": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",

@@ -1,12 +1,7 @@
-import { Response, Request } from "express";
-import Company from "../databases/companies";
-import users from "../databases/users";
+import Company from "../databases/companies.js";
+import users from "../databases/users.js";
 
-interface AuthenticatedRequest extends Request {
-  user?: { email: string };
-}
-
-const createCompany = async (req: AuthenticatedRequest, res: Response) => {
+const createCompany = async (req, res) => {
   try {
     const {
       company_name,
@@ -16,7 +11,7 @@ const createCompany = async (req: AuthenticatedRequest, res: Response) => {
       company_email,
       superadmin_email,
     } = req.body;
-    const { email, role }: any = req.user;
+    const { email, role } = req.user;
     if (role !== "Superadmin") {
       return res
         .status(403)
@@ -38,9 +33,9 @@ const createCompany = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const fetchCompanys = async (req: AuthenticatedRequest, res: Response) => {
+const fetchCompanys = async (req, res) => {
   try {
-    const { email, role }: any = req.user;
+    const { email, role } = req.user;
     if (role !== "Superadmin") {
       return res
         .status(403)
@@ -55,9 +50,9 @@ const fetchCompanys = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-const fetchCompanyUsers = async (req: AuthenticatedRequest, res: Response) => {
+const fetchCompanyUsers = async (req, res) => {
   try {
-    const { email, role }: any = req.user;
+    const { email, role } = req.user;
 
     if (role !== "Admin") {
       return res.status(403).json({

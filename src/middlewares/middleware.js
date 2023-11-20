@@ -1,25 +1,18 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { Request, Response, NextFunction } from "express";
+
 dotenv.config();
 
-const secretKey: any = process.env.JWT_SECRET;
-interface AuthenticatedRequest extends Request {
-  user?: any;
-}
+const secretKey = process.env.JWT_SECRET;
 
-function authenticateJWT(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) {
+function authenticateJWT(req, res, next) {
   const token = req.header("Authorization")?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized: Missing token" });
   }
 
-  jwt.verify(token, secretKey, (err: any, user: any) => {
+  jwt.verify(token, secretKey, (err, user) => {
     if (err) {
       return res.status(403).json({ error: "Forbidden: Invalid token" });
     }

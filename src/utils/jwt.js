@@ -3,9 +3,9 @@ import { config } from "dotenv";
 
 config();
 
-const jwt_secret: any = process.env.JWT_SECRET;
+const jwt_secret = process.env.JWT_SECRET;
 
-const createToken = (email: string, role: string, name: string) => {
+const createToken = (email, role, name) => {
   const token = jwt.sign({ name: name, role: role, email: email }, jwt_secret, {
     expiresIn: "24h",
   });

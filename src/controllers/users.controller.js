@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
-import Users from "../databases/users.ts";
-import passHash from "../utils/passHash.ts";
-import createToken from "../utils/jwt.ts";
-import Company from "../databases/companies.ts";
+import Users from "../databases/users.js";
+import passHash from "../utils/passHash.js";
+import createToken from "../utils/jwt.js";
+import Company from "../databases/companies.js";
 
-const createCompanyUser = async (req: Request, res: Response) => {
+const createCompanyUser = async (req, res) => {
   try {
     const { name, email, password, role, dob, phone_number, status, company } =
       req.body;
@@ -45,7 +44,7 @@ const createCompanyUser = async (req: Request, res: Response) => {
   }
 };
 
-const createSuperAdmin = async (req: Request, res: Response) => {
+const createSuperAdmin = async (req, res) => {
   try {
     const { name, email, password, role, dob, phone_number, status } = req.body;
 
@@ -78,11 +77,11 @@ const createSuperAdmin = async (req: Request, res: Response) => {
   }
 };
 
-const userLogin = async (req: Request, res: Response) => {
+const userLogin = async (req, res) => {
   try {
     const { password, email } = req.body;
 
-    const user: any = await Users.User.findOne({ email: email });
+    const user = await Users.User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({ error: `${email} doesn't exist!!` });
     }
