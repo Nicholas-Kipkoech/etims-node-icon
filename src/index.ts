@@ -8,6 +8,7 @@ config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 const mongoose_url: any = process.env.MONGO_URL;
 
 connectDb(mongoose_url);

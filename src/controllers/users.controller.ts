@@ -97,6 +97,7 @@ const userLogin = async (req: Request, res: Response) => {
       access_token: token,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
