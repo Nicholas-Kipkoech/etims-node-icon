@@ -8,6 +8,13 @@ const createCompanyUser = async (req, res) => {
     const { name, email, password, role, dob, phone_number, status, company } =
       req.body;
 
+    const { role: admin } = req.user;
+
+    if (admin !== "Admin" && admin !== "Superadmin") {
+      return res.status(403).json({
+        error: "Only company admins or superadmins can create users!!",
+      });
+    }
     const existing = await Users.CompanyUser.findOne({ email: email });
     if (existing) {
       return res.status(400).json({ error: `${email} already exists!!!` });
