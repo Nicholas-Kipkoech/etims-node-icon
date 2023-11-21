@@ -1,7 +1,6 @@
 import Company from "../databases/companies.js";
 import users from "../databases/users.js";
 import passHash from "../utils/passHash.js";
-
 import { sendEmail } from "../utils/sendEmail.js";
 
 const createCompany = async (req, res) => {
@@ -103,7 +102,7 @@ const fetchCompanyUsers = async (req, res) => {
     if (role === "Superadmin") {
       // If the user is a superadmin, fetch all company users
       companyUsers = await users.CompanyUser.find({});
-    } else {
+    } else if (role === "Admin") {
       // If the user is an admin, check if they are an admin in any company
       const isAdmin = await Company.findOne({
         admins: { $elemMatch: { email } },
@@ -113,13 +112,15 @@ const fetchCompanyUsers = async (req, res) => {
           error: "Access forbidden. You are not an admin of any company.",
         });
       }
+      console.log(isAdmin);
+
       const companyId = isAdmin?._id;
       companyUsers = await users.CompanyUser.find({ company: companyId });
     }
 
     return res.status(200).json({ users: companyUsers });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return res.status(500).json(error);
   }
 };
