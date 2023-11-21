@@ -11,6 +11,6 @@ usersRouter.post(
 );
 usersRouter.post("/superadmin/create", userController.createSuperAdmin);
 usersRouter.post("/login", userController.userLogin);
-usersRouter.post("/update", authenticateJWT, userController.updateUser);
+usersRouter.patch("/update", authenticateJWT, userController.updateUser);
 
 export default usersRouter;
