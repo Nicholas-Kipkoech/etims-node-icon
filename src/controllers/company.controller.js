@@ -72,12 +72,16 @@ const createCompany = async (req, res) => {
 const fetchCompanys = async (req, res) => {
   try {
     const { email, role } = req.user;
-    if (role !== "Superadmin") {
+    if (role !== "Superadmin" && role !== "Admin") {
       return res
         .status(403)
         .json({ error: "Only superadmin can access this resource!!" });
     }
-    const companies = await Company.find({ created_by: email });
+
+    const companies = await Company.find({
+      $or: [{ created_by: email }, { "admins.email": email }],
+    });
+
     if (companies) {
       return res.status(200).json({ companies: companies });
     }
@@ -120,4 +124,21 @@ const fetchCompanyUsers = async (req, res) => {
   }
 };
 
-export default { createCompany, fetchCompanys, fetchCompanyUsers };
+const fetchCompanyById = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const company = await Company.findById(companyId);
+    if (company) {
+      return res.status(200).json({ company: company });
+    }
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+export default {
+  createCompany,
+  fetchCompanys,
+  fetchCompanyUsers,
+  fetchCompanyById,
+};
