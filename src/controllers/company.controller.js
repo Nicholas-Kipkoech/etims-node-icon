@@ -89,42 +89,6 @@ const fetchCompanys = async (req, res) => {
   }
 };
 
-const fetchCompanyUsers = async (req, res) => {
-  try {
-    const { email, role } = req.user;
-
-    if (role !== "Admin" && role !== "Superadmin") {
-      return res.status(403).json({
-        error: "Only admin or superadmin can access this resource!!",
-      });
-    }
-    let companyUsers;
-    if (role === "Superadmin") {
-      // If the user is a superadmin, fetch all company users
-      companyUsers = await users.CompanyUser.find({});
-    } else if (role === "Admin") {
-      // If the user is an admin, check if they are an admin in any company
-      const isAdmin = await Company.findOne({
-        admins: { $elemMatch: { email } },
-      });
-      if (!isAdmin) {
-        return res.status(403).json({
-          error: "Access forbidden. You are not an admin of any company.",
-        });
-      }
-      console.log(isAdmin);
-
-      const companyId = isAdmin?._id;
-      companyUsers = await users.CompanyUser.find({ company: companyId });
-    }
-
-    return res.status(200).json({ users: companyUsers });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json(error);
-  }
-};
-
 const fetchCompanyById = async (req, res) => {
   try {
     const { companyId } = req.params;
@@ -140,6 +104,5 @@ const fetchCompanyById = async (req, res) => {
 export default {
   createCompany,
   fetchCompanys,
-  fetchCompanyUsers,
   fetchCompanyById,
 };

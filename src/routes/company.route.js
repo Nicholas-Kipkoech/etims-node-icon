@@ -11,10 +11,5 @@ companyRouter.get(
   authenticateJWT,
   companyController.fetchCompanyById
 );
-companyRouter.get(
-  "/fetch/users",
-  authenticateJWT,
-  companyController.fetchCompanyUsers
-);
 
 export default companyRouter;
