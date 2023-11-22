@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = (to, subject, password, company) => {
   const htmlTemplate = `
-    <div>
+    <div style={{font-size:16px}}>
       <p>Hello ${to} Your account was successfully created by <strong>${company}</strong>.</p>
       <p>Your one-time login credentials are:</p>
       <ul>
