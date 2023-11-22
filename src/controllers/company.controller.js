@@ -80,7 +80,12 @@ const createCompany = async (req, res) => {
     });
 
     adminWithPasswords.forEach((admin) => {
-      sendEmail(admin?.email, "Admin account creation", admin?.password);
+      sendEmail(
+        admin?.email,
+        "Admin account creation",
+        admin?.password,
+        newCompany.company_name
+      );
     });
 
     return res.status(200).json({ company: newCompany });
