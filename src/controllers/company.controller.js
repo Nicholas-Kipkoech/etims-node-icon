@@ -31,6 +31,7 @@ const createCompany = async (req, res) => {
     }
     // Check if any admin email already exists in users.User
     const existingAdmin = await users.User.findOne({ email: { $in: admins } });
+    console.log(existingAdmin);
     if (existingAdmin) {
       return res
         .status(400)
@@ -79,11 +80,7 @@ const createCompany = async (req, res) => {
     });
 
     adminWithPasswords.forEach((admin) => {
-      sendEmail(
-        admin?.email,
-        "Admin Registration",
-        `Your account was created by ${company_name} and your password is ${admin?.password} Please login and update your password as soon as possible!!`
-      );
+      sendEmail(admin?.email, "Admin account creation", admin?.password);
     });
 
     return res.status(200).json({ company: newCompany });

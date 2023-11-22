@@ -9,12 +9,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (to, subject, text) => {
+export const sendEmail = (to, subject, password) => {
+  const htmlTemplate = `
+    <div>
+      <p>Hello ${to} Your account was successfully created by test company.</p>
+      <p>Your one-time login credentials are:</p>
+      <ul>
+        <li><strong>Username:</strong> ${to}</li>
+        <li><strong>Password:</strong> ${password}</li>
+      </ul>
+      <p>Please login and update your password as soon as possible using the link below:</p>
+      <a href="https://icon-x-kra.vercel.app">Login Link</a>
+    </div>
+  `;
+
   const mailOptions = {
     from: process.env.EMAIL_HOST,
     to,
     subject,
-    text,
+    html: htmlTemplate,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
