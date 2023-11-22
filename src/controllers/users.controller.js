@@ -117,12 +117,14 @@ const updateUser = async (req, res) => {
 
     // Fetch the user from the database
     const user = await Users.User.findOne({ email });
+    const companyUser = await Users.CompanyUser.findOne({ email });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
     // Update the user's information
     user.name = name;
+    companyUser?.name = name;
 
     // If a new password is provided, update the password
     if (newPassword) {
@@ -131,6 +133,7 @@ const updateUser = async (req, res) => {
 
     // Save the updated user information
     await user.save();
+    await companyUser.save()
 
     return res.status(200).json({
       success: true,

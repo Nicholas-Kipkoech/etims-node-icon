@@ -20,6 +20,22 @@ const createCompany = async (req, res) => {
         .json({ error: "Only superadmin can create a company!!" });
     }
 
+    // Check if any admin email already exists in the admins array
+    const duplicateAdmin = admins.find(
+      (admin, index) => admins.indexOf(admin) !== index
+    );
+    if (duplicateAdmin) {
+      return res
+        .status(400)
+        .json({ error: `Duplicate admin email: ${duplicateAdmin}` });
+    }
+    // Check if any admin email already exists in users.User
+    const existingAdmin = await users.User.findOne({ email: { $in: admins } });
+    if (existingAdmin) {
+      return res
+        .status(400)
+        .json({ error: `Admin email already exists: ${existingAdmin.email}` });
+    }
     //generate passwords for each admins
 
     const adminWithPasswords = await Promise.all(
@@ -51,6 +67,13 @@ const createCompany = async (req, res) => {
         role: "Admin",
         email: admin.email,
         password: admin.hashedPassword,
+      });
+      users.CompanyUser.create({
+        name: null,
+        role: "Admin",
+        email: admin?.email,
+        status: newCompany?.status,
+        company: newCompany?._id,
       });
     });
 
