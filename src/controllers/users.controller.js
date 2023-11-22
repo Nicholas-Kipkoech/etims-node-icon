@@ -124,7 +124,7 @@ const updateUser = async (req, res) => {
 
     // Update the user's information
     user.name = name;
-    companyUser?.name = name;
+    companyUser.name = name;
 
     // If a new password is provided, update the password
     if (newPassword) {
@@ -133,7 +133,7 @@ const updateUser = async (req, res) => {
 
     // Save the updated user information
     await user.save();
-    await companyUser.save()
+    await companyUser.save();
 
     return res.status(200).json({
       success: true,
