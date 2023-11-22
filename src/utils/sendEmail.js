@@ -9,10 +9,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (to, subject, password) => {
+export const sendEmail = (to, subject, password, company) => {
   const htmlTemplate = `
     <div>
-      <p>Hello ${to} Your account was successfully created by test company.</p>
+      <p>Hello ${to} Your account was successfully created by <strong>${company}</strong>.</p>
       <p>Your one-time login credentials are:</p>
       <ul>
         <li><strong>Username:</strong> ${to}</li>
