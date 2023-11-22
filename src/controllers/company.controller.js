@@ -74,6 +74,7 @@ const createCompany = async (req, res) => {
         email: admin?.email,
         status: newCompany?.status,
         company: newCompany?._id,
+        password: admin?.password,
       });
     });
 

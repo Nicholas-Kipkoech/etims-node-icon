@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const companyUserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   company: { type: mongoose.Types.ObjectId, ref: "Company" },
-  email: { type: String, required: true },
+  email: { type: String },
   role: {
     type: String,
     default: "Normal_user",
