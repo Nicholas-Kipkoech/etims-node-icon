@@ -119,8 +119,11 @@ const fetchCompanyById = async (req, res) => {
   try {
     const { companyId } = req.params;
     const company = await Company.findById(companyId);
+    const companyUsers = await users.CompanyUser.find({ company: companyId });
     if (company) {
-      return res.status(200).json({ company: company });
+      return res.status(200).json({ company: company, users: companyUsers });
+    } else {
+      return res.status(404).json({ error: "No company found!" });
     }
   } catch (error) {
     return res.status(500).json(error);
