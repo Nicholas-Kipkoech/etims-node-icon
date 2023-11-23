@@ -14,6 +14,11 @@ usersRouter.patch(
   authenticateJWT,
   userController.updateCompanyUser
 );
+usersRouter.delete(
+  "/company/delete/:userId",
+  authenticateJWT,
+  userController.deleteCompanyUser
+);
 usersRouter.post("/superadmin/create", userController.createSuperAdmin);
 usersRouter.post("/login", userController.userLogin);
 usersRouter.patch("/update", authenticateJWT, userController.updateUser);

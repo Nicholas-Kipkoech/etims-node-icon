@@ -16,5 +16,10 @@ companyRouter.patch(
   authenticateJWT,
   companyController.updateCompany
 );
+companyRouter.delete(
+  "/delete/:companyId",
+  authenticateJWT,
+  companyController.deleteCompany
+);
 
 export default companyRouter;

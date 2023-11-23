@@ -145,9 +145,23 @@ const updateCompany = async (req, res) => {
   }
 };
 
+const deleteCompany = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const deletedCompany = await Company.findOneAndRemove({ _id: companyId });
+    if (!deletedCompany) {
+      return res.status(404).json({ error: "couldn't get the company" });
+    }
+    return res.status(200).json(deletedCompany);
+  } catch (error) {
+    return res.status(200).json(error);
+  }
+};
+
 export default {
   createCompany,
   fetchCompanys,
   fetchCompanyById,
+  deleteCompany,
   updateCompany,
 };

@@ -212,6 +212,23 @@ const updateCompanyUser = async (req, res) => {
     return res.status(200).json(error);
   }
 };
+const deleteCompanyUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const deletedUser = await Users.CompanyUser.findOneAndRemove({
+      _id: userId,
+    });
+    if (!deletedUser) {
+      return res.status(404).json({ error: "couldn't get the user" });
+    }
+    await Users.User.findOneAndRemove({ _id: userId });
+    return res
+      .status(200)
+      .json({ message: "deleted", deletedUser: deletedUser });
+  } catch (error) {
+    return res.status(200).json(error);
+  }
+};
 
 export default {
   createCompanyUser,
@@ -220,4 +237,5 @@ export default {
   updateUser,
   fetchCompanyUsers,
   updateCompanyUser,
+  deleteCompanyUser,
 };
