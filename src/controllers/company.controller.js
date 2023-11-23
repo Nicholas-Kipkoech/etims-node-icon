@@ -127,8 +127,27 @@ const fetchCompanyById = async (req, res) => {
   }
 };
 
+const updateCompany = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const updatedCompany = await Company.findOneAndUpdate(
+      { _id: companyId },
+      req.body,
+      { new: true }
+    );
+    if (!updatedCompany) {
+      return res.status(404).json({ error: "couldn't get the company" });
+    }
+    await updatedCompany.save();
+    return res.status(200).json(updatedCompany);
+  } catch (error) {
+    return res.status(200).json(error);
+  }
+};
+
 export default {
   createCompany,
   fetchCompanys,
   fetchCompanyById,
+  updateCompany,
 };

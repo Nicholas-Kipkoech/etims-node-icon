@@ -185,10 +185,39 @@ const fetchCompanyUsers = async (req, res) => {
   }
 };
 
+const updateCompanyUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const updatedUser = await Users.CompanyUser.findOneAndUpdate(
+      { _id: userId },
+      req.body,
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "couldn't get the company" });
+    }
+    const user = await Users.User.findById(userId);
+    if (user) {
+      user.name = updatedUser.name;
+      user.email = updatedUser.email;
+      user.password = updatedUser.password;
+      user.role = updatedUser.role;
+    }
+    await user.save();
+    await updatedUser.save();
+    return res
+      .status(200)
+      .json({ message: "updated", updatedUser: updatedUser });
+  } catch (error) {
+    return res.status(200).json(error);
+  }
+};
+
 export default {
   createCompanyUser,
   userLogin,
   createSuperAdmin,
   updateUser,
   fetchCompanyUsers,
+  updateCompanyUser,
 };

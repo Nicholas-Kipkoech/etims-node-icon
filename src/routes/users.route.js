@@ -9,6 +9,11 @@ usersRouter.post(
   authenticateJWT,
   userController.createCompanyUser
 );
+usersRouter.patch(
+  "/company/update/:userId",
+  authenticateJWT,
+  userController.updateCompanyUser
+);
 usersRouter.post("/superadmin/create", userController.createSuperAdmin);
 usersRouter.post("/login", userController.userLogin);
 usersRouter.patch("/update", authenticateJWT, userController.updateUser);

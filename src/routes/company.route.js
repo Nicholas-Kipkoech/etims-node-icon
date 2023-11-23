@@ -11,5 +11,10 @@ companyRouter.get(
   authenticateJWT,
   companyController.fetchCompanyById
 );
+companyRouter.patch(
+  "/update/:companyId",
+  authenticateJWT,
+  companyController.updateCompany
+);
 
 export default companyRouter;
