@@ -196,7 +196,7 @@ const updateCompanyUser = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ error: "couldn't get the company" });
     }
-    const user = await Users.User.findById(userId);
+    const user = await Users.User.findByIdAndUpdate({ userId: userId });
     if (user) {
       user.name = updatedUser.name;
       user.email = updatedUser.email;
@@ -221,7 +221,7 @@ const deleteCompanyUser = async (req, res) => {
     if (!deletedUser) {
       return res.status(404).json({ error: "couldn't get the user" });
     }
-    await Users.User.findOneAndRemove({ _id: userId });
+    await Users.User.findOneAndRemove({ userId: userId });
     return res
       .status(200)
       .json({ message: "deleted", deletedUser: deletedUser });
