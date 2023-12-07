@@ -1,6 +1,9 @@
 import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
+import Transactions from "../../databases/transactions.js";
+import Company from "../../databases/companies.js";
+import users from "../../databases/users.js";
 
 config();
 
@@ -310,6 +313,7 @@ class EtimsController {
   async trnsSalesSaveWrReq(req, res) {
     try {
       const {
+        company,
         trdInvcNo,
         orgInvcNo,
         custTin,
@@ -399,8 +403,61 @@ class EtimsController {
         receipt,
         itemList,
       };
+      const { email } = req.user;
+      const _user = await users.CompanyUser.findOne({ email: email });
+      const _company = await Company.findById(company);
+      const newTransaction = await Transactions.create({
+        user: _user,
+        company: _company,
+        trdInvcNo,
+        invcNo,
+        orgInvcNo,
+        custTin,
+        custNm,
+        salesTyCd,
+        rcptTyCd,
+        pmtTyCd,
+        salesSttsCd,
+        cfmDt,
+        salesDt,
+        stockRlsDt,
+        cnclReqDt,
+        cnclDt,
+        rfdDt,
+        rfdRsnCd,
+        totItemCnt,
+        taxblAmtA,
+        taxblAmtB,
+        taxblAmtC,
+        taxblAmtD,
+        taxblAmtE,
+        taxRtA,
+        taxRtB,
+        taxRtC,
+        taxRtD,
+        taxRtE,
+        taxAmtA,
+        taxAmtB,
+        taxAmtC,
+        taxAmtD,
+        taxAmtE,
+        totTaxblAmt,
+        totTaxAmt,
+        totAmt,
+        prchrAcptcYn,
+        remark,
+        regrId,
+        regrNm,
+        modrId,
+        modrNm,
+        receipt,
+        itemList,
+      });
+      await newTransaction.save();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
-      return res.status(200).json({ response: data });
+      return res
+        .status(200)
+        .json({ response: data, transaction: newTransaction });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
@@ -461,6 +518,7 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        receipt,
         itemList,
       } = req.body;
       const invcNo = generateRandom8DigitNumber();
@@ -508,8 +566,12 @@ class EtimsController {
         modrNm,
         itemList,
       };
+
       const data = await this.makeApiRequest("insertTrnsPurchase", payload);
-      return res.status(200).json({ response: data });
+
+      return res
+        .status(200)
+        .json({ response: data, transactions: newTransaction });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);

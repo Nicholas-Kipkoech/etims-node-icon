@@ -1,5 +1,7 @@
 import { Router } from "express";
 import etimsController from "../../controllers/etims-api/etims-controller.js";
+import authenticateJWT from "../../middlewares/middleware.js";
+
 const etimsAPIRouter = Router();
 
 etimsAPIRouter.post("/initialize", (req, res) => {
@@ -41,7 +43,7 @@ etimsAPIRouter.post("/selectImportItemList", (req, res) => {
 etimsAPIRouter.post("/updateImportItem", (req, res) => {
   etimsController.importItemUpdateReq(req, res);
 });
-etimsAPIRouter.post("/saveTrnsSalesOsdc", (req, res) => {
+etimsAPIRouter.post("/saveTrnsSalesOsdc", authenticateJWT, (req, res) => {
   etimsController.trnsSalesSaveWrReq(req, res);
 });
 etimsAPIRouter.post("/selectTrnsPurchaseSalesList", (req, res) => {

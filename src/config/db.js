@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
 
-const connectDb = async (url) => {
+// Connect to the MongoDB cluster using the MONGO_URL environment variable
+export const connectToDb = async () => {
+  const mongoUrl = process.env.MONGO_URL;
   try {
-    await mongoose.connect(url, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-    });
-    console.log("Database connected successfully");
+    mongoose.connect(mongoUrl);
+    console.log("database connected...");
   } catch (error) {
-    console.log("error", error);
+    throw error;
   }
 };
-
-export default connectDb;

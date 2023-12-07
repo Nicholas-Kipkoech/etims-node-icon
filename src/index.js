@@ -1,19 +1,19 @@
 import express from "express";
 import { config } from "dotenv";
-import connectDb from "./config/db.js";
+
 import usersRouter from "./routes/users.route.js";
 import companyRouter from "./routes/company.route.js";
 import cors from "cors";
 import etimsAPIRouter from "./routes/etims/etims.route.js";
+import { connectToDb } from "./config/db.js";
 
 config();
+connectToDb();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const mongoose_url = process.env.MONGO_URL;
-
-connectDb(mongoose_url);
 
 const port = process.env.PORT;
 
