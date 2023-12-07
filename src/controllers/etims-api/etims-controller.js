@@ -403,8 +403,15 @@ class EtimsController {
         receipt,
         itemList,
       };
-      const { email } = req.user;
-      const _user = await users.CompanyUser.findOne({ email: email });
+      const { role, email } = req.user;
+      let _user;
+      if (role === "Superadmin") {
+        _user = await users.Superadmin.findOne({ email: email });
+      } else if (role === "Admin") {
+        _user = await users.CompanyUser.findOne({ email: email });
+      } else {
+        _user = await users.CompanyUser.findOne({ email: email });
+      }
       const _company = await Company.findById(company);
       const newTransaction = await Transactions.create({
         user: _user,
@@ -572,6 +579,27 @@ class EtimsController {
       return res
         .status(200)
         .json({ response: data, transactions: newTransaction });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  async fetchTransactions(req, res) {
+    try {
+      const { email, role } = req.user;
+      let transactions;
+      if (role === "Superadmin") {
+        transactions = await Transactions.find({});
+      } else if (role === "Normal_user") {
+        console.log(email);
+        const { userId } = await users.User.findOne({ email: email });
+        transactions = await Transactions.find({ user: userId });
+      } else {
+        console.log("null");
+      }
+
+      return res.status(200).json({ transactions: transactions });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
