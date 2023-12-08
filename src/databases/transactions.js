@@ -13,7 +13,7 @@ const receiptSchema = new mongoose.Schema({
 
 const itemSchema = new mongoose.Schema({
   itemSeq: { type: Number, required: true },
-  itemCd: { type: String, required: true },
+  itemCd: { type: String },
   itemClsCd: { type: String, required: true },
   itemNm: { type: String, required: true },
   bcd: { type: String, default: null },
