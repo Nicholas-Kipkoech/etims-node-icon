@@ -611,7 +611,7 @@ class EtimsController {
       const { email, role } = req.user;
       let transactions;
       if (role === "Superadmin") {
-        transactions = await Transactions.find({});
+        transactions = await transactionsDb.Transactions.find({});
       } else if (role === "Normal_user") {
         console.log(email);
         const { userId } = await users.User.findOne({ email: email });
