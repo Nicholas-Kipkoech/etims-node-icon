@@ -474,6 +474,8 @@ class EtimsController {
       const { resultCd, resultMsg, resultDt, data: _data } = data;
 
       const txResponse = new transactionsDb.TxResponse({
+        user: _user,
+        company: _company,
         transactionID: newTransaction.transactionID,
         resultCd: resultCd,
         resultMsg: resultMsg,
@@ -610,17 +612,22 @@ class EtimsController {
     try {
       const { email, role } = req.user;
       let transactions;
+      let txResponse;
       if (role === "Superadmin") {
         transactions = await transactionsDb.Transactions.find({});
+        txResponse = await transactionsDb.TxResponse.find({});
       } else if (role === "Normal_user") {
         console.log(email);
         const { userId } = await users.User.findOne({ email: email });
         transactions = await transactionsDb.Transactions.find({ user: userId });
+        txResponse = await transactionsDb.TxResponse.find({ user: userId });
       } else {
         console.log("null");
       }
 
-      return res.status(200).json({ transactions: transactions });
+      return res
+        .status(200)
+        .json({ transactions: transactions, txResponse: txResponse });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);

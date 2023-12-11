@@ -84,6 +84,8 @@ const transactionSchema = mongoose.Schema({
 });
 
 const transactionResponse = new mongoose.Schema({
+  user: { type: mongoose.Types.ObjectId, ref: "CompanyUser" },
+  company: { type: mongoose.Types.ObjectId, ref: "Company" },
   transactionID: { type: String },
   resultCd: { type: String },
   resultMsg: { type: String },
