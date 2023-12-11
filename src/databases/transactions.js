@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const receiptSchema = new mongoose.Schema({
-  custTin: { type: String, required: true },
+  custTin: { type: String, required: false },
   custMblNo: { type: String, default: null },
   rcptPbctDt: { type: String, required: true },
   trdeNm: { type: String, default: null },
