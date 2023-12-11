@@ -36,6 +36,7 @@ const itemSchema = new mongoose.Schema({
 });
 
 const transactionSchema = mongoose.Schema({
+  transactionID: { type: String },
   user: { type: mongoose.Types.ObjectId, ref: "CompanyUser" },
   company: { type: mongoose.Types.ObjectId, ref: "Company" },
   trdInvcNo: { type: String, required: true },
@@ -82,5 +83,15 @@ const transactionSchema = mongoose.Schema({
   itemList: [itemSchema],
 });
 
+const transactionResponse = new mongoose.Schema({
+  transactionID: { type: String },
+  resultCd: { type: String },
+  resultMsg: { type: String },
+  resultDt: { type: String },
+  intrlData: { type: String },
+  rcptSign: { type: String },
+  sdcDateTime: { type: String },
+});
+const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
-export default Transactions;
+export default { Transactions, TxResponse };

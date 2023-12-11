@@ -1,7 +1,7 @@
 import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
-import Transactions from "../../databases/transactions.js";
+import transactionsDb from "../../databases/transactions.js";
 import Company from "../../databases/companies.js";
 import users from "../../databases/users.js";
 
@@ -414,9 +414,11 @@ class EtimsController {
       }
       const _company = await Company.findById(company);
       let newTransaction;
+      const transactionID = generateRandom8DigitNumber().toString();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
       if (data && data.resultCd === "000") {
-        newTransaction = await Transactions.create({
+        newTransaction = await transactionsDb.Transactions.create({
+          transactionID: transactionID,
           user: _user,
           company: _company,
           trdInvcNo,
@@ -469,9 +471,21 @@ class EtimsController {
         console.error("API request failed with resultCd:", data.resultCd);
         return res.status(500).json({ error: "API request failed", data });
       }
+      const { resultCd, resultMsg, resultDt, data: _data } = data;
+
+      const txResponse = new transactionsDb.TxResponse({
+        transactionID: newTransaction.transactionID,
+        resultCd: resultCd,
+        resultMsg: resultMsg,
+        resultDt: resultDt,
+        intrlData: _data.intrlData,
+        rcptSign: _data.rcptSign,
+        sdcDateTime: _data.sdcDateTime,
+      });
+      await txResponse.save();
       return res
         .status(200)
-        .json({ response: data, transaction: newTransaction });
+        .json({ txResponse: txResponse, transaction: newTransaction });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
@@ -601,7 +615,7 @@ class EtimsController {
       } else if (role === "Normal_user") {
         console.log(email);
         const { userId } = await users.User.findOne({ email: email });
-        transactions = await Transactions.find({ user: userId });
+        transactions = await transactionsDb.Transactions.find({ user: userId });
       } else {
         console.log("null");
       }
