@@ -56,4 +56,12 @@ etimsAPIRouter.get("/fetch-transactions", authenticateJWT, (req, res) => {
   etimsController.fetchTransactions(req, res);
 });
 
+etimsAPIRouter.get(
+  "/fetch-transactions/:transactionID",
+  authenticateJWT,
+  (req, res) => {
+    etimsController.fetchTransactionsById(req, res);
+  }
+);
+
 export default etimsAPIRouter;

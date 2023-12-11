@@ -633,6 +633,26 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
+  async fetchTransactionsById(req, res) {
+    try {
+      const { transactionID } = req.params;
+      const transaction = await transactionsDb.Transactions.findById(
+        transactionID
+      );
+      const transactionResponse = await transactionsDb.TxResponse.findOne({
+        transactionID: transaction.transactionID,
+      });
+      return res
+        .status(200)
+        .json({
+          transaction: transaction,
+          transactionResponse: transactionResponse,
+        });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
 }
 
 const etimsController = new EtimsController();
