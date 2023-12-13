@@ -642,14 +642,21 @@ class EtimsController {
       const transactionResponse = await transactionsDb.TxResponse.findOne({
         transactionID: transaction.transactionID,
       });
-      return res
-        .status(200)
-        .json({
-          transaction: transaction,
-          transactionResponse: transactionResponse,
-        });
+      return res.status(200).json({
+        transaction: transaction,
+        transactionResponse: transactionResponse,
+      });
     } catch (error) {
       console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+  async openSaveTransSales(req, res) {
+    try {
+      const payload = req.body;
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
+      return res.status(200).json({ response: data });
+    } catch (error) {
       return res.status(500).json(error);
     }
   }
