@@ -94,6 +94,19 @@ const transactionResponse = new mongoose.Schema({
   rcptSign: { type: String },
   sdcDateTime: { type: String },
 });
+
+const etimsHeadersSchema = new mongoose.Schema({
+  company: { type: mongoose.Types.ObjectId, ref: "Company" },
+  kraPIN: { type: String },
+  branchId: { type: String },
+  managerName: { type: String },
+  branchName: { type: String },
+  cmcKey: { type: String },
+  deviceId: { type: String },
+  createdAt: { type: Date, default: Date.now() },
+});
+
 const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
-export default { Transactions, TxResponse };
+const EtimsHeaders = mongoose.model("EtimsHeaders", etimsHeadersSchema);
+export default { Transactions, TxResponse, EtimsHeaders };
