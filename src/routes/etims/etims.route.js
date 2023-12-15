@@ -43,7 +43,7 @@ etimsAPIRouter.post("/selectImportItemList", (req, res) => {
 etimsAPIRouter.post("/updateImportItem", (req, res) => {
   etimsController.importItemUpdateReq(req, res);
 });
-etimsAPIRouter.post("/saveTrnsSalesOsdc", authenticateJWT, (req, res) => {
+etimsAPIRouter.post("/saveTrnsSalesOsdc", (req, res) => {
   etimsController.trnsSalesSaveWrReq(req, res);
 });
 etimsAPIRouter.post("/selectTrnsPurchaseSalesList", (req, res) => {

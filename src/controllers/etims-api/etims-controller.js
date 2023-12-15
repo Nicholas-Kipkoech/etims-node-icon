@@ -403,23 +403,16 @@ class EtimsController {
         receipt,
         itemList,
       };
-      const { role, email } = req.user;
-      let _user;
-      if (role === "Superadmin") {
-        _user = await users.Superadmin.findOne({ email: email });
-      } else if (role === "Admin") {
-        _user = await users.CompanyUser.findOne({ email: email });
-      } else {
-        _user = await users.CompanyUser.findOne({ email: email });
-      }
       const _company = await Company.findById(company);
+      if (!_company) {
+        return res.status(400).json({ error: "Company doesnt exist!!" });
+      }
       let newTransaction;
       const transactionID = generateRandom8DigitNumber().toString();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
           transactionID: transactionID,
-          user: _user,
           company: _company,
           trdInvcNo,
           invcNo,
@@ -474,7 +467,6 @@ class EtimsController {
       const { resultCd, resultMsg, resultDt, data: _data } = data;
 
       const txResponse = new transactionsDb.TxResponse({
-        user: _user,
         company: _company,
         transactionID: newTransaction.transactionID,
         resultCd: resultCd,

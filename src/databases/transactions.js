@@ -37,7 +37,6 @@ const itemSchema = new mongoose.Schema({
 
 const transactionSchema = mongoose.Schema({
   transactionID: { type: String },
-  user: { type: mongoose.Types.ObjectId, ref: "CompanyUser" },
   company: { type: mongoose.Types.ObjectId, ref: "Company" },
   trdInvcNo: { type: String, required: true },
   invcNo: { type: Number, required: true },
