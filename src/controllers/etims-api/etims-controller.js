@@ -725,16 +725,22 @@ class EtimsController {
       // });
       // const { cmcKey, branchId, kraPIN } = companyInfo;
 
-      const apiLog = new transactionsDb.ApiLog({
+      const apiRequestLog = new transactionsDb.ApiLog({
         request_type: "sales transaction",
         request: JSON.stringify(payload),
       });
-      await apiLog.save();
+      await apiRequestLog.save();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
         cmcKey: process.env.CMCKEY,
         tin: process.env.TIN,
         bhfId: process.env.BHFID,
       });
+      const apiResponseLog = new transactionsDb.ApiLog({
+        request_type: "sales transaction",
+        request: JSON.stringify(data),
+      });
+      await apiResponseLog.save();
+
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error("Error in openSaveTransSales:", error);
