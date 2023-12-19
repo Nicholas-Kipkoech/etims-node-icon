@@ -725,6 +725,11 @@ class EtimsController {
       // });
       // const { cmcKey, branchId, kraPIN } = companyInfo;
 
+      const apiLog = new transactionsDb.ApiLog({
+        request_type: "sales transaction",
+        request: JSON.stringify(payload),
+      });
+      await apiLog.save();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
         cmcKey: process.env.CMCKEY,
         tin: process.env.TIN,

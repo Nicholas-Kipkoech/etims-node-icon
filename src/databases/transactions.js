@@ -106,7 +106,15 @@ const companyEtimsDetails = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now() },
 });
 
+const apiLogSchema = new mongoose.Schema({
+  request_type: String,
+  request: Object,
+  created_at: { type: Date, default: Date.now() },
+});
+
 const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
 const CompanyDetails = mongoose.model("CompanyDetails", companyEtimsDetails);
-export default { Transactions, TxResponse, CompanyDetails };
+const ApiLog = mongoose.model("ApiLog", apiLogSchema);
+
+export default { Transactions, TxResponse, CompanyDetails, ApiLog };
