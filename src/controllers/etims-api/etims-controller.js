@@ -719,16 +719,16 @@ class EtimsController {
   async openSaveTransSales(req, res) {
     try {
       const payload = req.body;
-      const { companyId } = req.body;
-      const companyInfo = await transactionsDb.CompanyDetails.findOne({
-        companyID: companyId,
-      });
-      const { cmcKey, branchId, kraPIN } = companyInfo;
+      // const { companyId } = req.body;
+      // const companyInfo = await transactionsDb.CompanyDetails.findOne({
+      //   companyID: companyId,
+      // });
+      // const { cmcKey, branchId, kraPIN } = companyInfo;
 
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
-        cmcKey: cmcKey,
-        tin: kraPIN,
-        bhfId: branchId,
+        cmcKey: process.env.CMCKEY,
+        tin: process.env.TIN,
+        bhfId: process.env.BHFID,
       });
       return res.status(200).json({ response: data });
     } catch (error) {
