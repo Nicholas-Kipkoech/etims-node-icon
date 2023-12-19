@@ -10,20 +10,20 @@ config();
 class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
-    this.defaultHeaders = {
-      cmcKey: process.env.CMCKEY,
-      tin: process.env.TIN,
-      bhfId: process.env.BHFID,
-    };
+    // this.defaultHeaders = {
+    //   cmcKey: process.env.CMCKEY,
+    //   tin: process.env.TIN,
+    //   bhfId: process.env.BHFID,
+    // };
   }
-  async makeApiRequest(endpoint, requestData) {
+  async makeApiRequest(endpoint, requestData, headers) {
     try {
       const payload = {
         ...requestData,
       };
 
       const response = await axios.post(`${this.apiUrl}/${endpoint}`, payload, {
-        headers: this.defaultHeaders,
+        headers: headers,
       });
       return response.data;
     } catch (error) {
@@ -34,10 +34,30 @@ class EtimsController {
   async initializeDevice(req, res) {
     try {
       const { dvcSrlNo } = req.body;
-      const data = await this.makeApiRequest("selectInitOsdcInfo", {
+      const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
         dvcSrlNo: dvcSrlNo,
       });
-      return res.status(200).json({ response: data });
+      if (response.data.resultCd === "000") {
+        const { tin, taxprNm, bhfId, bhfNm, dvcId, cmcKey, mgrNm } =
+          response.data.data.info;
+
+        const _companyId = generateRandom8DigitNumber().toString();
+        const newCompanyDetails = new transactionsDb.CompanyDetails({
+          companyID: _companyId,
+          kraPIN: tin,
+          deviceId: dvcId,
+          branchId: bhfId,
+          managerName: mgrNm,
+          branchName: bhfNm,
+          cmcKey: cmcKey,
+          taxPayerName: taxprNm,
+        });
+
+        await newCompanyDetails.save();
+        return res
+          .status(200)
+          .json({ companyID: newCompanyDetails.companyID, response: response });
+      }
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -45,11 +65,23 @@ class EtimsController {
 
   async getCodeList(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectCodeList", {
-        lastReqDt: lastReqDt,
+      const { lastReqDt, companyId } = req.body;
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
       });
-      return res.status(200).json({ response: data });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+      const data = await this.makeApiRequest(
+        "selectCodeList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: kraPIN,
+          bhfId: branchId,
+        }
+      );
+      return res.status(200).json(data);
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
@@ -58,11 +90,23 @@ class EtimsController {
 
   async selectCustomerReq(req, res) {
     try {
-      const { custmTin } = req.body;
-
-      const data = await this.makeApiRequest("selectCustomer", {
-        custmTin: custmTin,
+      const { custmTin, companyId } = req.body;
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
       });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+
+      const data = await this.makeApiRequest(
+        "selectCustomer",
+        {
+          custmTin: custmTin,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: kraPIN,
+          bhfId: branchId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -71,10 +115,23 @@ class EtimsController {
   }
   async noticeSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectNoticeList", {
-        lastReqDt: lastReqDt,
+      const { lastReqDt, companyId } = req.body;
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
       });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+
+      const data = await this.makeApiRequest(
+        "selectNoticeList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: kraPIN,
+          bhfId: branchId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -83,11 +140,23 @@ class EtimsController {
   }
   async itemClsSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-
-      const data = await this.makeApiRequest("selectItemClsList", {
-        lastReqDt: lastReqDt,
+      const { lastReqDt, companyId } = req.body;
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
       });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+
+      const data = await this.makeApiRequest(
+        "selectItemClsList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: kraPIN,
+          bhfId: branchId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -122,6 +191,7 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        companyId,
       } = req.body;
       const payload = {
         itemClsCd,
@@ -150,7 +220,15 @@ class EtimsController {
         modrId,
         modrNm,
       };
-      const data = await this.makeApiRequest("saveItem", payload);
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
+      });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+      const data = await this.makeApiRequest("saveItem", payload, {
+        cmcKey: cmcKey,
+        tin: kraPIN,
+        bhfId: branchId,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -646,10 +724,21 @@ class EtimsController {
   async openSaveTransSales(req, res) {
     try {
       const payload = req.body;
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
+      const { companyId } = req.body;
+      const companyInfo = await transactionsDb.CompanyDetails.findOne({
+        companyID: companyId,
+      });
+      const { cmcKey, branchId, kraPIN } = companyInfo;
+
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
+        cmcKey: cmcKey,
+        tin: kraPIN,
+        bhfId: branchId,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
-      return res.status(500).json(error);
+      console.error("Error in openSaveTransSales:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }
