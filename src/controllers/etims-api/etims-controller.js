@@ -10,11 +10,6 @@ config();
 class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
-    // this.defaultHeaders = {
-    //   cmcKey: process.env.CMCKEY,
-    //   tin: process.env.TIN,
-    //   bhfId: process.env.BHFID,
-    // };
   }
   async makeApiRequest(endpoint, requestData, headers) {
     try {
