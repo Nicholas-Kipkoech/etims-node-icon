@@ -108,7 +108,7 @@ const companyEtimsDetails = new mongoose.Schema({
 
 const apiLogSchema = new mongoose.Schema({
   request_type: String,
-  request: Object,
+  request: String,
   created_at: { type: Date, default: Date.now() },
 });
 

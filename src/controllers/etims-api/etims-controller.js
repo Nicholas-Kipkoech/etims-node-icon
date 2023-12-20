@@ -752,6 +752,17 @@ class EtimsController {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }
+
+  async fetchApiLogs(req, res) {
+    try {
+      const infoLogs = await transactionsDb.ApiLog.find({}).exec();
+      if (infoLogs) {
+        return res.status(200).json({ apiLogs: infoLogs });
+      }
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
 }
 
 const etimsController = new EtimsController();

@@ -66,5 +66,8 @@ etimsAPIRouter.get(
     etimsController.fetchTransactionsById(req, res);
   }
 );
+etimsAPIRouter.get("/apiLogs", (req, res) => {
+  etimsController.fetchApiLogs(req, res);
+});
 
 export default etimsAPIRouter;
