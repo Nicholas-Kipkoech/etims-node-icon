@@ -743,6 +743,11 @@ class EtimsController {
 
       return res.status(200).json({ response: data });
     } catch (error) {
+      const apiErrorLog = new transactionsDb.ApiLog({
+        request_type: "Sales transaction error",
+        request: JSON.stringify(error),
+      });
+      await apiErrorLog.save();
       console.error("Error in openSaveTransSales:", error);
       return res.status(500).json({ error: "Internal Server Error" });
     }
