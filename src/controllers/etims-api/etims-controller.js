@@ -726,7 +726,7 @@ class EtimsController {
       // const { cmcKey, branchId, kraPIN } = companyInfo;
 
       const apiRequestLog = new transactionsDb.ApiLog({
-        request_type: "sales transaction",
+        request_type: "sales transaction request",
         request: JSON.stringify(payload),
       });
       await apiRequestLog.save();
@@ -736,7 +736,7 @@ class EtimsController {
         bhfId: process.env.BHFID,
       });
       const apiResponseLog = new transactionsDb.ApiLog({
-        request_type: "sales transaction",
+        request_type: "sales transaction response",
         request: JSON.stringify(data),
       });
       await apiResponseLog.save();
