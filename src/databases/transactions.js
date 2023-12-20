@@ -109,12 +109,32 @@ const companyEtimsDetails = new mongoose.Schema({
 const apiLogSchema = new mongoose.Schema({
   request_type: String,
   request: String,
+  status: String,
+  created_at: { type: Date, default: Date.now() },
+});
+
+const BIMAtransactionSchema = new mongoose.Schema({
+  requestID: String,
+  request: String,
+  status: String,
+  response: String,
   created_at: { type: Date, default: Date.now() },
 });
 
 const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
 const CompanyDetails = mongoose.model("CompanyDetails", companyEtimsDetails);
+const BimaTransaction = mongoose.model(
+  "BimaTransaction",
+  BIMAtransactionSchema
+);
+
 const ApiLog = mongoose.model("ApiLog", apiLogSchema);
 
-export default { Transactions, TxResponse, CompanyDetails, ApiLog };
+export default {
+  Transactions,
+  TxResponse,
+  CompanyDetails,
+  ApiLog,
+  BimaTransaction,
+};

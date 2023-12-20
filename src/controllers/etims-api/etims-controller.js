@@ -34,8 +34,7 @@ class EtimsController {
       });
       if (response.data.resultCd === "000") {
         const { tin, taxprNm, bhfId, bhfNm, dvcId, cmcKey, mgrNm } =
-          response.data.data.info;
-
+          response.data?.data?.info;
         const _companyId = generateRandom8DigitNumber().toString();
         const newCompanyDetails = new transactionsDb.CompanyDetails({
           companyID: _companyId,
@@ -719,14 +718,24 @@ class EtimsController {
   async openSaveTransSales(req, res) {
     try {
       const payload = req.body;
+      const request_id = payload?.invcNo;
       // const { companyId } = req.body;
       // const companyInfo = await transactionsDb.CompanyDetails.findOne({
       //   companyID: companyId,
       // });
       // const { cmcKey, branchId, kraPIN } = companyInfo;
 
+      const bimaTransactionPayload = new transactionsDb.BimaTransaction({
+        requestID: request_id,
+        request: JSON.stringify(payload),
+        status: "Recieved response from BIMA",
+        response: null,
+      });
+      await bimaTransactionPayload.save();
+
       const apiRequestLog = new transactionsDb.ApiLog({
         request_type: "sales transaction request",
+        status: "Pending",
         request: JSON.stringify(payload),
       });
       await apiRequestLog.save();
@@ -735,16 +744,27 @@ class EtimsController {
         tin: process.env.TIN,
         bhfId: process.env.BHFID,
       });
+      // save response from KRA
+      const bimaTransactionEtimsResponse = new transactionsDb.BimaTransaction({
+        requestID: bimaTransactionPayload?.requestID,
+        request: bimaTransactionPayload?.request,
+        status: "Recieved response from ETIMS",
+        response: JSON.stringify(data),
+        created_at: Date.now(),
+      });
+      await bimaTransactionEtimsResponse.save();
+      // api response log from etims
       const apiResponseLog = new transactionsDb.ApiLog({
         request_type: "sales transaction response",
+        status: "Recieved",
         request: JSON.stringify(data),
       });
       await apiResponseLog.save();
-
       return res.status(200).json({ response: data });
     } catch (error) {
       const apiErrorLog = new transactionsDb.ApiLog({
         request_type: "Sales transaction error",
+        status: "Error",
         request: JSON.stringify(error),
       });
       await apiErrorLog.save();
