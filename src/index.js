@@ -13,8 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const mongoose_url = process.env.MONGO_URL;
-
 const port = process.env.PORT;
 
 app.get("/", (req, res) => {

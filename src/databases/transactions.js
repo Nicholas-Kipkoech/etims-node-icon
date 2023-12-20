@@ -116,7 +116,7 @@ const apiLogSchema = new mongoose.Schema({
 const BIMAtransactionSchema = new mongoose.Schema({
   requestID: String,
   request: String,
-  status: String,
+  message: String,
   response: String,
   created_at: { type: Date, default: Date.now() },
 });

@@ -719,16 +719,10 @@ class EtimsController {
     try {
       const payload = req.body;
       const request_id = payload?.invcNo;
-      // const { companyId } = req.body;
-      // const companyInfo = await transactionsDb.CompanyDetails.findOne({
-      //   companyID: companyId,
-      // });
-      // const { cmcKey, branchId, kraPIN } = companyInfo;
-
       const bimaTransactionPayload = new transactionsDb.BimaTransaction({
         requestID: request_id,
         request: JSON.stringify(payload),
-        status: "Recieved response from BIMA",
+        message: "Recieved response from BIMA",
         response: null,
       });
       await bimaTransactionPayload.save();
@@ -739,6 +733,7 @@ class EtimsController {
         request: JSON.stringify(payload),
       });
       await apiRequestLog.save();
+
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
         cmcKey: process.env.CMCKEY,
         tin: process.env.TIN,
@@ -748,7 +743,7 @@ class EtimsController {
       const bimaTransactionEtimsResponse = new transactionsDb.BimaTransaction({
         requestID: bimaTransactionPayload?.requestID,
         request: bimaTransactionPayload?.request,
-        status: "Recieved response from ETIMS",
+        message: "Recieved response from ETIMS",
         response: JSON.stringify(data),
         created_at: Date.now(),
       });
