@@ -69,5 +69,8 @@ etimsAPIRouter.get(
 etimsAPIRouter.get("/apiLogs", (req, res) => {
   etimsController.fetchApiLogs(req, res);
 });
+etimsAPIRouter.get("/bimaTxs", (req, res) => {
+  etimsController.fetchBimaTransactions(req, res);
+});
 
 export default etimsAPIRouter;

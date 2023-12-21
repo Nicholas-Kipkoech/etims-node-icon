@@ -84,21 +84,16 @@ class EtimsController {
 
   async selectCustomerReq(req, res) {
     try {
-      const { custmTin, companyId } = req.body;
-      const companyInfo = await transactionsDb.CompanyDetails.findOne({
-        companyID: companyId,
-      });
-      const { cmcKey, branchId, kraPIN } = companyInfo;
-
+      const { custmTin } = req.body;
       const data = await this.makeApiRequest(
         "selectCustomer",
         {
           custmTin: custmTin,
         },
         {
-          cmcKey: cmcKey,
-          tin: kraPIN,
-          bhfId: branchId,
+          cmcKey: process.env.CMCKEY,
+          tin: process.env.TIN,
+          bhfId: process.env.BHFID,
         }
       );
       return res.status(200).json({ response: data });
@@ -773,6 +768,18 @@ class EtimsController {
       const infoLogs = await transactionsDb.ApiLog.find({}).exec();
       if (infoLogs) {
         return res.status(200).json({ apiLogs: infoLogs });
+      }
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+  async fetchBimaTransactions(req, res) {
+    try {
+      const bimaTransactions = await transactionsDb.BimaTransaction.find(
+        {}
+      ).exec();
+      if (bimaTransactions) {
+        return res.status(200).json({ bimaTransactions: bimaTransactions });
       }
     } catch (error) {
       return res.status(500).json(error);
