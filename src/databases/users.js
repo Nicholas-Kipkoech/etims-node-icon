@@ -17,7 +17,10 @@ const userSchema = new mongoose.Schema({
   email: { type: String },
   password: { type: String },
   role: { type: String },
-  business_class: { type: String, required: false },
+  business_class: { type: String },
+  business_segment: { type: String },
+  business_family: { type: String },
+  business_comodity: { type: String },
 });
 
 const Superadmin = mongoose.model("Superadmin", superadminSchema);

@@ -6,8 +6,7 @@ class UserController {
   constructor() {}
   async createSuperAdmin(req, res) {
     try {
-      const { name, email, password, role, dob, phone_number, status } =
-        req.body;
+      const { name, email, password, role, dob, phone_number } = req.body;
       const existingUser = await users.Superadmin.findOne({ email: email });
       if (existingUser) {
         return res.status(400).json({ error: `${email} already exists!` });
@@ -20,14 +19,12 @@ class UserController {
         name,
         phone_number,
         dob,
-        status,
       });
       await users.User.create({
         name: newSuperAdmin.name,
         userId: newSuperAdmin._id,
         role: newSuperAdmin.role,
         email: newSuperAdmin.email,
-        status: newSuperAdmin.status,
         password: newSuperAdmin.password,
       });
       await newSuperAdmin.save();
@@ -49,7 +46,15 @@ class UserController {
       if (!isValidPass) {
         return res.status(401).json({ error: "Invalid password!!" });
       }
-      const token = createToken(user.email, user.role, user.name);
+      const token = createToken(
+        user.email,
+        user.role,
+        user.name,
+        user?.business_class,
+        user?.business_comodity,
+        user?.business_family,
+        user?.business_segment
+      );
       return res.status(200).json({
         success: true,
         user: user,
