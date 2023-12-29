@@ -2,7 +2,6 @@ import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
-import Company from "../../databases/companies.js";
 import users from "../../databases/users.js";
 
 config();
@@ -312,7 +311,6 @@ class EtimsController {
   async trnsSalesSaveWrReq(req, res) {
     try {
       const {
-        company,
         trdInvcNo,
         orgInvcNo,
         custTin,
@@ -402,17 +400,13 @@ class EtimsController {
         receipt,
         itemList,
       };
-      const _company = await Company.findById(company);
-      if (!_company) {
-        return res.status(400).json({ error: "Company doesnt exist!!" });
-      }
+
       let newTransaction;
       const transactionID = generateRandom8DigitNumber().toString();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
           transactionID: transactionID,
-          company: _company,
           trdInvcNo,
           invcNo,
           orgInvcNo,
@@ -466,7 +460,6 @@ class EtimsController {
       const { resultCd, resultMsg, resultDt, data: _data } = data;
 
       const txResponse = new transactionsDb.TxResponse({
-        company: _company,
         transactionID: newTransaction.transactionID,
         resultCd: resultCd,
         resultMsg: resultMsg,
