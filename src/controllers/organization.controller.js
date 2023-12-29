@@ -1,5 +1,6 @@
 import Organization from "../databases/organizations.js";
 import users from "../databases/users.js";
+import { validateOrg } from "../middlewares/validation.js";
 import { generateRandom8DigitNumber } from "../utils/helpers.js";
 import passHash from "../utils/passHash.js";
 import { sendEmail } from "../utils/sendEmail.js";
@@ -9,16 +10,20 @@ class OrganizationController {
   async createOrganization(req, res) {
     try {
       const {
-        organization_name,
         organization_email,
+        organization_name,
         organization_phone,
-        business_class,
         business_segment,
         business_family,
+        business_class,
         business_comodity,
       } = req.body;
+      const { error } = validateOrg(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const checkOrganization = await Organization.findOne({
-        organization_email: email,
+        organization_email: organization_email,
       });
       if (checkOrganization) {
         return res.status(400).json({ error: "Organization already exists!!" });
@@ -38,7 +43,7 @@ class OrganizationController {
       sendEmail(
         organization_email,
         "Account Creation",
-        genPassword,
+        random8digit,
         organization_name
       );
 
