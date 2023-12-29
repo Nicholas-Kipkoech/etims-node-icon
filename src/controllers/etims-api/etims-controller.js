@@ -11,8 +11,8 @@ class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
     this.defaultHeaders = {
-      cmcKey: process.env.CMCKEY,
-      tin: process.env.TIN,
+      cmcKey: process.env.TEST_CMCKEY,
+      tin: process.env.TEST_TIN,
       bhfId: process.env.BHFID,
     };
   }
@@ -37,26 +37,7 @@ class EtimsController {
       const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
         dvcSrlNo: dvcSrlNo,
       });
-      if (response.data.resultCd === "000") {
-        const { tin, taxprNm, bhfId, bhfNm, dvcId, cmcKey, mgrNm } =
-          response.data?.data?.info;
-        const _companyId = generateRandom8DigitNumber().toString();
-        const newCompanyDetails = new transactionsDb.CompanyDetails({
-          companyID: _companyId,
-          kraPIN: tin,
-          deviceId: dvcId,
-          branchId: bhfId,
-          managerName: mgrNm,
-          branchName: bhfNm,
-          cmcKey: cmcKey,
-          taxPayerName: taxprNm,
-        });
-
-        await newCompanyDetails.save();
-        return res
-          .status(200)
-          .json({ companyID: newCompanyDetails.companyID, response: response });
-      }
+      return res.status(200).json(response.data);
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -609,9 +590,7 @@ class EtimsController {
 
       const data = await this.makeApiRequest("insertTrnsPurchase", payload);
 
-      return res
-        .status(200)
-        .json({ response: data, transactions: newTransaction });
+      return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
@@ -682,7 +661,7 @@ class EtimsController {
 
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
         cmcKey: process.env.CMCKEY,
-        tin: process.env.TIN,
+        tin: process.env.TEST_TIN,
         bhfId: process.env.BHFID,
       });
       // save response from KRA

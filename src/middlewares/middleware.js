@@ -14,7 +14,7 @@ function authenticateJWT(req, res, next) {
 
   jwt.verify(token, secretKey, (err, user) => {
     if (err) {
-      return res.status(403).json({ error: "Forbidden: Invalid token" });
+      return res.status(403).json({ error: "Forbidden: Invalid token!!" });
     }
     // Make the user information available in req.user
     req.user = user;
