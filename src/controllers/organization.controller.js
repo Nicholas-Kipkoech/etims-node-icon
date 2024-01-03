@@ -128,8 +128,11 @@ class OrganizationController {
   }
   async fetchFamilies(req, res) {
     try {
-      const { segmentId } = req.body;
-      const families = await EtimsItemsDb.Family.find({ segment: segmentId });
+      const { segment_code } = req.body;
+      const segment = await EtimsItemsDb.Segment.findOne({
+        segment_code: segment_code,
+      });
+      const families = await EtimsItemsDb.Family.find({ segment: segment._id }); // You can add more conditions if needed
       if (families) {
         return res.status(200).json({ families });
       }
@@ -169,8 +172,11 @@ class OrganizationController {
   }
   async fetchClasses(req, res) {
     try {
-      const { familyId } = req.body;
-      const classes = await EtimsItemsDb.Class.find({ family: familyId });
+      const { family_code } = req.body;
+      const family = await EtimsItemsDb.Family.findOne({
+        family_code: family_code,
+      });
+      const classes = await EtimsItemsDb.Class.find({ family: family._id });
       if (classes) {
         return res.status(200).json({ classes });
       }
