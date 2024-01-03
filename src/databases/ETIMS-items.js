@@ -10,6 +10,7 @@ const familySchema = new mongoose.Schema({
   family_code: { type: String },
   family_name: { type: String },
 });
+
 const classSchema = new mongoose.Schema({
   family: { type: mongoose.Types.ObjectId, ref: "Family" },
   class_code: { type: String },
