@@ -132,7 +132,7 @@ class OrganizationController {
       const segment = await EtimsItemsDb.Segment.findOne({
         segment_code: segment_code,
       });
-      const families = await EtimsItemsDb.Family.find({ segment: segment._id }); // You can add more conditions if needed
+      const families = await EtimsItemsDb.Family.find({ segment: segment?._id }); // You can add more conditions if needed
       if (families) {
         return res.status(200).json({ families });
       }
@@ -176,7 +176,7 @@ class OrganizationController {
       const family = await EtimsItemsDb.Family.findOne({
         family_code: family_code,
       });
-      const classes = await EtimsItemsDb.Class.find({ family: family._id });
+      const classes = await EtimsItemsDb.Class.find({ family: family?._id });
       if (classes) {
         return res.status(200).json({ classes });
       }
