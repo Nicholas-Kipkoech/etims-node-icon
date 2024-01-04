@@ -10,12 +10,12 @@ class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
     this.defaultHeaders = {
-      cmcKey: process.env.TEST_CMCKEY,
-      tin: process.env.TEST_TIN,
+      cmcKey: process.env.CMCKEY,
+      tin: process.env.TIN,
       bhfId: process.env.BHFID,
     };
   }
-  async makeApiRequest(endpoint, requestData, headers) {
+  async makeApiRequest(endpoint, requestData) {
     try {
       const payload = {
         ...requestData,
@@ -652,11 +652,7 @@ class EtimsController {
       });
       await apiRequestLog.save();
 
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
-        cmcKey: process.env.CMCKEY,
-        tin: process.env.TEST_TIN,
-        bhfId: process.env.BHFID,
-      });
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
       // save response from KRA
       const bimaTransactionEtimsResponse = new transactionsDb.BimaTransaction({
         requestID: bimaTransactionPayload?.requestID,
