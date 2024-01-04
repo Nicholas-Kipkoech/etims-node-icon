@@ -174,7 +174,7 @@ class OrganizationController {
   }
   async fetchClasses(req, res) {
     try {
-      const { family_code } = req.body;
+      const { family_code } = req.params;
       const family = await EtimsItemsDb.Family.findOne({
         family_code: family_code,
       });

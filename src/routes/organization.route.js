@@ -22,7 +22,7 @@ organizationRouter.get("/fetch/family/:segment_code", (req, res) => {
 organizationRouter.post("/add/class", (req, res) => {
   organizationController.addClass(req, res);
 });
-organizationRouter.get("/fetch/classes", (req, res) => {
+organizationRouter.get("/fetch/classes/:family_code", (req, res) => {
   organizationController.fetchClasses(req, res);
 });
 export default organizationRouter;
