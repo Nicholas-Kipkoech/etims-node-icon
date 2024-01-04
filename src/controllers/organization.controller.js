@@ -17,7 +17,6 @@ class OrganizationController {
         business_segment,
         business_family,
         business_class,
-        business_comodity,
       } = req.body;
       const { error } = validateOrg(req.body);
       if (error) {
