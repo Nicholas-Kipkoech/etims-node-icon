@@ -10,7 +10,7 @@ const createToken = (
   role,
   name,
   business_class,
-  business_comodity,
+
   business_family,
   business_segment
 ) => {
@@ -20,7 +20,6 @@ const createToken = (
       role: role,
       email: email,
       business_class: business_class,
-      business_comodity: business_comodity,
       business_segment: business_segment,
       business_family: business_family,
     },

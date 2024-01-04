@@ -51,7 +51,6 @@ class UserController {
         user.role,
         user.name,
         user?.business_class,
-        user?.business_comodity,
         user?.business_family,
         user?.business_segment
       );

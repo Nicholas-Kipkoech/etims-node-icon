@@ -7,7 +7,6 @@ const organizationSchema = new mongoose.Schema({
   business_segment: { type: String, required: true },
   business_family: { type: String, required: true },
   business_class: { type: String, required: true },
-  business_comodity: { type: String, required: true },
   created_at: { type: Date, default: Date.now() },
 });
 

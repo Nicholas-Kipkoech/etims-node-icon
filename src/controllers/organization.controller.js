@@ -38,7 +38,6 @@ class OrganizationController {
         business_segment,
         business_family,
         business_class,
-        business_comodity,
       });
 
       sendEmail(
@@ -56,7 +55,6 @@ class OrganizationController {
         userId: new_org?._id,
         business_class: new_org?.business_class,
         business_segment: new_org?.business_segment,
-        business_comodity: new_org?.business_comodity,
         business_family: new_org?.business_family,
       });
       await new_org.save();
