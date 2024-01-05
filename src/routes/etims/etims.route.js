@@ -55,7 +55,7 @@ etimsAPIRouter.post("/insertTrnsPurchase", (req, res) => {
 etimsAPIRouter.post("/saveTrnsSale", (req, res) => {
   etimsController.openSaveTransSales(req, res);
 });
-etimsAPIRouter.get("/fetch-transactions", authenticateJWT, (req, res) => {
+etimsAPIRouter.get("/fetch-transactions", (req, res) => {
   etimsController.fetchTransactions(req, res);
 });
 

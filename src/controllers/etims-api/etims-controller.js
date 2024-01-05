@@ -592,20 +592,10 @@ class EtimsController {
 
   async fetchTransactions(req, res) {
     try {
-      const { email, role } = req.user;
       let transactions;
       let txResponse;
-      if (role === "Superadmin") {
-        transactions = await transactionsDb.Transactions.find({});
-        txResponse = await transactionsDb.TxResponse.find({});
-      } else if (role === "Normal_user") {
-        console.log(email);
-        const { userId } = await users.User.findOne({ email: email });
-        transactions = await transactionsDb.Transactions.find({ user: userId });
-        txResponse = await transactionsDb.TxResponse.find({ user: userId });
-      } else {
-        console.log("null");
-      }
+      transactions = await transactionsDb.Transactions.find({});
+      txResponse = await transactionsDb.TxResponse.find({});
 
       return res
         .status(200)
