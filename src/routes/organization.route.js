@@ -25,4 +25,10 @@ organizationRouter.post("/add/class", (req, res) => {
 organizationRouter.get("/fetch/classes/:family_code", (req, res) => {
   organizationController.fetchClasses(req, res);
 });
+organizationRouter.post("/add/comodity", (req, res) => {
+  organizationController.addComodity(req, res);
+});
+organizationRouter.get("/fetch/comodities/:class_code", (req, res) => {
+  organizationController.fetchComidities(req, res);
+});
 export default organizationRouter;

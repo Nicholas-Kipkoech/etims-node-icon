@@ -184,6 +184,50 @@ class OrganizationController {
       return res.status(500).json({ error: error?.message });
     }
   }
+  async addComodity(req, res) {
+    try {
+      const { classId, comodity_name, comodity_code } = req.body;
+      const _comodity = await EtimsItemsDb.Comodity.findOne({
+        comodity_code: comodity_code,
+      });
+      if (_comodity) {
+        return res.status(400).json({
+          error: `Item Comodity with code ${comodity_code} already exists! `,
+        });
+      }
+      const _class = await EtimsItemsDb.Class.findById(classId);
+      if (!_class) {
+        return res.status(404).json({ error: "No Class with that ID found!!" });
+      }
+      const newComodity = new EtimsItemsDb.Comodity({
+        class: _class,
+        comodity_name: comodity_name,
+        comodity_code: comodity_code,
+      });
+      await newComodity.save();
+      return res.status(200).json({ message: "Comodity added successfully!" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error?.message });
+    }
+  }
+  async fetchComidities(req, res) {
+    try {
+      const { class_code } = req.params;
+      const _class = await EtimsItemsDb.Class.findOne({
+        class_code: class_code,
+      });
+      const comodities = await EtimsItemsDb.Comodity.find({
+        class: _class?._id,
+      });
+      if (comodities) {
+        return res.status(200).json({ comodities });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error?.message });
+    }
+  }
 }
 
 const organizationController = new OrganizationController();
