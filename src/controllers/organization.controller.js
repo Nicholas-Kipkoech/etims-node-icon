@@ -63,6 +63,19 @@ class OrganizationController {
       return res.status(500).json(error);
     }
   }
+
+  async fetchOrganizations(req, res) {
+    try {
+      const registered_organizations = await Organization.find({});
+      if (registered_organizations) {
+        return res.status(200).json({ registered_organizations });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
   async addSegment(req, res) {
     try {
       const { segment_code, segment_name } = req.body;

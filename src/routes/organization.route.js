@@ -6,6 +6,9 @@ const organizationRouter = Router();
 organizationRouter.post("/create", (req, res) => {
   organizationController.createOrganization(req, res);
 });
+organizationRouter.get("/fetch", (req, res) => {
+  organizationController.fetchOrganizations(req, res);
+});
 organizationRouter.post("/add/segment", (req, res) => {
   organizationController.addSegment(req, res);
 });
