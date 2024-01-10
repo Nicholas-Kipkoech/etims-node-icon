@@ -1,6 +1,12 @@
 import Organization from "../databases/organizations.js";
 import users from "../databases/users.js";
-import { validateOrg } from "../middlewares/validation.js";
+import {
+  validateClass,
+  validateComodity,
+  validateFamily,
+  validateOrg,
+  validateSegment,
+} from "../middlewares/validation.js";
 import { generateRandom8DigitNumber } from "../utils/helpers.js";
 import passHash from "../utils/passHash.js";
 import { sendEmail } from "../utils/sendEmail.js";
@@ -79,6 +85,10 @@ class OrganizationController {
   async addSegment(req, res) {
     try {
       const { segment_code, segment_name } = req.body;
+      const { error } = validateSegment(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const segment = await EtimsItemsDb.Segment.findOne({
         segment_code: segment_code,
       });
@@ -110,6 +120,10 @@ class OrganizationController {
   async addFamily(req, res) {
     try {
       const { segmentId, family_code, family_name } = req.body;
+      const { error } = validateFamily(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const family = await EtimsItemsDb.Family.findOne({
         family_code: family_code,
       });
@@ -156,6 +170,10 @@ class OrganizationController {
   async addClass(req, res) {
     try {
       const { familyId, class_name, class_code } = req.body;
+      const { error } = validateClass(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const _class = await EtimsItemsDb.Class.findOne({
         class_code: class_code,
       });
@@ -200,6 +218,10 @@ class OrganizationController {
   async addComodity(req, res) {
     try {
       const { classId, comodity_name, comodity_code } = req.body;
+      const { error } = validateComodity(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const _comodity = await EtimsItemsDb.Comodity.findOne({
         comodity_code: comodity_code,
       });
