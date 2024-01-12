@@ -64,7 +64,7 @@ class UserController {
       return res.status(500).json(error);
     }
   }
-  async updateUser(req, res) {
+  async updateUserPassword(req, res) {
     try {
       const { email } = req.user; // Assuming the user's email is in the req.user object
       const { name, newPassword } = req.body;

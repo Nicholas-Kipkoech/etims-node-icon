@@ -7,8 +7,8 @@ const usersRouter = Router();
 usersRouter.post("/superadmin/create", (req, res) => {
   userController.createSuperAdmin(req, res);
 });
-usersRouter.patch("/update", authenticateJWT, (req, res) => {
-  userController.updateUser(req, res);
+usersRouter.patch("/password/update", authenticateJWT, (req, res) => {
+  userController.updateUserPassword(req, res);
 });
 usersRouter.post("/login", (req, res) => {
   userController.userLogin(req, res);
