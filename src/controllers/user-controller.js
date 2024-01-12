@@ -1,4 +1,5 @@
 import users from "../databases/users.js";
+import { validateUserLogin } from "../middlewares/validation.js";
 import createToken from "../utils/jwt.js";
 import passHash from "../utils/passHash.js";
 
@@ -37,6 +38,10 @@ class UserController {
     try {
       const { password, email } = req.body;
 
+      const { error } = validateUserLogin(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
       const user = await users.User.findOne({ email: email });
       if (!user) {
         return res.status(400).json({ error: `${email} doesn't exist!!` });
