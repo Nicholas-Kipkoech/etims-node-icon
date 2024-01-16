@@ -100,6 +100,18 @@ class UserController {
       return res.status(500).json(error);
     }
   }
+
+  async fetchUsers(req, res) {
+    try {
+      const _users = await users.User.find({});
+      if (_users) {
+        return res.status(200).json({ _users });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json(error);
+    }
+  }
 }
 
 const userController = new UserController();
