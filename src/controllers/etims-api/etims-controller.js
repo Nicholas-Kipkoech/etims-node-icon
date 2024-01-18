@@ -411,7 +411,15 @@ class EtimsController {
 
       let newTransaction;
       const transactionID = generateRandom8DigitNumber().toString();
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
+      const data = await this.makeApiRequest(
+        "saveTrnsSalesOsdc",
+        {
+          cmcKey: process.env.CMCKEY,
+          tin: process.env.TIN,
+          bhfId: process.env.BHFID,
+        },
+        payload
+      );
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
           transactionID: transactionID,
