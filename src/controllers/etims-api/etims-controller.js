@@ -15,14 +15,14 @@ class EtimsController {
       bhfId: process.env.BHFID,
     };
   }
-  async makeApiRequest(endpoint, requestData) {
+  async makeApiRequest(endpoint, requestData, headers) {
     try {
       const payload = {
         ...requestData,
       };
 
       const response = await axios.post(`${this.apiUrl}/${endpoint}`, payload, {
-        headers: this.defaultHeaders,
+        headers: headers,
       });
       return response.data;
     } catch (error) {
@@ -44,10 +44,18 @@ class EtimsController {
 
   async getCodeList(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectCodeList", {
-        lastReqDt: lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectCodeList",
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        },
+        {
+          lastReqDt: lastReqDt,
+        }
+      );
       return res.status(200).json(data);
     } catch (error) {
       console.error(error);
