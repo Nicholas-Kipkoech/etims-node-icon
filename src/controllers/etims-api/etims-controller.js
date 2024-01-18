@@ -48,12 +48,12 @@ class EtimsController {
       const data = await this.makeApiRequest(
         "selectCodeList",
         {
+          lastReqDt: lastReqDt,
+        },
+        {
           cmcKey: cmcKey,
           tin: tin,
           bhfId: bhfId,
-        },
-        {
-          lastReqDt: lastReqDt,
         }
       );
       return res.status(200).json(data);
@@ -65,10 +65,18 @@ class EtimsController {
 
   async selectCustomerReq(req, res) {
     try {
-      const { custmTin } = req.body;
-      const data = await this.makeApiRequest("selectCustomer", {
-        custmTin: custmTin,
-      });
+      const { custmTin, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectCustomer",
+        {
+          custmTin: custmTin,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -77,10 +85,18 @@ class EtimsController {
   }
   async noticeSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectNoticeList", {
-        lastReqDt: lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectNoticeList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -89,10 +105,18 @@ class EtimsController {
   }
   async itemClsSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectItemClsList", {
-        lastReqDt: lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectItemClsList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -127,36 +151,16 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        cmcKey,
+        tin,
+        bhfId,
       } = req.body;
-      const payload = {
-        itemClsCd,
-        itemCd,
-        itemTyCd,
-        itemNm,
-        itemStdNm,
-        orgnNatCd,
-        pkgUnitCd,
-        qtyUnitCd,
-        taxTyCd,
-        btchNo,
-        bcd,
-        dftPrc,
-        grpPrcL1,
-        grpPrcL2,
-        grpPrcL3,
-        grpPrcL4,
-        grpPrcL5,
-        addInfo,
-        sftyQty,
-        isrcAplcbYn,
-        useYn,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-      };
 
-      const data = await this.makeApiRequest("saveItem", payload);
+      const data = await this.makeApiRequest("saveItem", req.body, {
+        cmcKey: cmcKey,
+        tin: tin,
+        bhfId: bhfId,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -165,10 +169,18 @@ class EtimsController {
   }
   async itemSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectItemList", {
-        lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectItemList",
+        {
+          lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -178,10 +190,18 @@ class EtimsController {
 
   async bhfSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectBhfList", {
-        lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectBhfList",
+        {
+          lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -205,23 +225,16 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        cmcKey,
+        tin,
+        bhfId,
       } = req.body;
-      const payload = {
-        custNo,
-        custTin,
-        custNm,
-        adrs,
-        telNo,
-        email,
-        faxNo,
-        useYn,
-        remark,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-      };
-      const data = await this.makeApiRequest("saveBhfCustomer", payload);
+
+      const data = await this.makeApiRequest("saveBhfCustomer", req.body, {
+        cmcKey: cmcKey,
+        tin: tin,
+        bhfId: bhfId,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -296,11 +309,19 @@ class EtimsController {
   }
   async importItemSearchReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
 
-      const data = await this.makeApiRequest("selectImportItemList", {
-        lastReqDt,
-      });
+      const data = await this.makeApiRequest(
+        "selectImportItemList",
+        {
+          lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -309,7 +330,11 @@ class EtimsController {
   }
   async importItemUpdateReq(req, res) {
     try {
-      const data = await this.makeApiRequest("updateImportItem", req.body);
+      const data = await this.makeApiRequest("updateImportItem", req.body, {
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -411,15 +436,11 @@ class EtimsController {
 
       let newTransaction;
       const transactionID = generateRandom8DigitNumber().toString();
-      const data = await this.makeApiRequest(
-        "saveTrnsSalesOsdc",
-        {
-          cmcKey: process.env.CMCKEY,
-          tin: process.env.TIN,
-          bhfId: process.env.BHFID,
-        },
-        payload
-      );
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
+        cmcKey: process.env.CMCKEY,
+        tin: process.env.TIN,
+        bhfId: process.env.BHFID,
+      });
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
           transactionID: transactionID,
@@ -495,10 +516,18 @@ class EtimsController {
   }
   async trnsPurchaseSalesReq(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectTrnsPurchaseSalesList", {
-        lastReqDt,
-      });
+      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectTrnsPurchaseSalesList",
+        {
+          lastReqDt,
+        },
+        {
+          cmcKey: cmcKey,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -658,7 +687,11 @@ class EtimsController {
       });
       await apiRequestLog.save();
 
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
+        cmcKey: payload.cmcKey,
+        tin: payload.tin,
+        bhfId: payload.bhfId,
+      });
       // save response from KRA
       const bimaTransactionEtimsResponse = new transactionsDb.BimaTransaction({
         requestID: bimaTransactionPayload?.requestID,
