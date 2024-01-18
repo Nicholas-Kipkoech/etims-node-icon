@@ -32,9 +32,11 @@ class EtimsController {
   }
   async initializeDevice(req, res) {
     try {
-      const { dvcSrlNo } = req.body;
+      const { dvcSrlNo, tin, bhfId } = req.body;
       const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
         dvcSrlNo: dvcSrlNo,
+        tin: tin,
+        bhfId: bhfId,
       });
       return res.status(200).json(response.data);
     } catch (error) {
