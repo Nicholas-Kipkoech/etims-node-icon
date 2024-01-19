@@ -22,6 +22,9 @@ etimsAPIRouter.post("/selectItemClsList", (req, res) => {
 etimsAPIRouter.post("/saveItem", (req, res) => {
   etimsController.itemSaveReq(req, res);
 });
+etimsAPIRouter.post("/saveItemComposition.", (req, res) => {
+  etimsController.saveItemComposition(req, res);
+});
 etimsAPIRouter.post("/selectItemList", (req, res) => {
   etimsController.itemSearchReq(req, res);
 });

@@ -138,6 +138,20 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
+  async saveItemComposition(req, res) {
+    try {
+      const data = await this.makeApiRequest("saveItemComposition", req.body, {
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
+      });
+      return res.status(200).json({ response: data });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
   async itemSearchReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;
