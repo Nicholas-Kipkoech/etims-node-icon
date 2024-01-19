@@ -278,8 +278,8 @@ class EtimsController {
       };
       const data = await this.makeApiRequest("saveBhfUser", payload, {
         cmcKey: cmcKey,
-        tin: cmcKey,
-        bhfId: cmcKey,
+        tin: tin,
+        bhfId: bhfId,
       });
       return res.status(200).json({ response: data });
     } catch (error) {
@@ -314,8 +314,8 @@ class EtimsController {
       };
       const data = await this.makeApiRequest("saveBhfInsurance", payload, {
         cmcKey: cmcKey,
-        tin: cmcKey,
-        bhfId: cmcKey,
+        tin: tin,
+        bhfId: bhfId,
       });
       return res.status(200).json({ response: data });
     } catch (error) {
