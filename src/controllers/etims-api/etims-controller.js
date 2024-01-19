@@ -127,41 +127,10 @@ class EtimsController {
   }
   async itemSaveReq(req, res) {
     try {
-      const {
-        itemClsCd,
-        itemCd,
-        itemTyCd,
-        itemNm,
-        itemStdNm,
-        orgnNatCd,
-        pkgUnitCd,
-        qtyUnitCd,
-        taxTyCd,
-        btchNo,
-        bcd,
-        dftPrc,
-        grpPrcL1,
-        grpPrcL2,
-        grpPrcL3,
-        grpPrcL4,
-        grpPrcL5,
-        addInfo,
-        sftyQty,
-        isrcAplcbYn,
-        useYn,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-        cmcKey,
-        tin,
-        bhfId,
-      } = req.body;
-
       const data = await this.makeApiRequest("saveItem", req.body, {
-        cmcKey: cmcKey,
-        tin: tin,
-        bhfId: bhfId,
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
       });
       return res.status(200).json({ response: data });
     } catch (error) {
