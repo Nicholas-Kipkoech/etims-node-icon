@@ -630,8 +630,8 @@ class EtimsController {
 
       const data = await this.makeApiRequest("insertTrnsPurchase", payload, {
         cmcKey: cmcKey,
-        tin: cmcKey,
-        bhfId: cmcKey,
+        tin: tin,
+        bhfId: bhfId,
       });
 
       return res.status(200).json({ response: data });
