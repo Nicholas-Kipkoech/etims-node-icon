@@ -641,6 +641,47 @@ class EtimsController {
     }
   }
 
+  async saveStockMaster(req, res) {
+    try {
+      const data = await this.makeApiRequest("saveStockMaster", req.body, {
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
+      });
+      return res.status(200).json({ response: data });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  async lookupStockMaster(req, res) {
+    try {
+      const data = await this.makeApiRequest("selectStockMoveList", req.body, {
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
+      });
+      return res.status(200).json({ response: data });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+  async saveStockIO(req, res) {
+    try {
+      const data = await this.makeApiRequest("insertStockIO", req.body, {
+        cmcKey: req.body.cmcKey,
+        tin: req.body.tin,
+        bhfId: req.body.bhfId,
+      });
+      return res.status(200).json({ response: data });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
   async fetchTransactions(req, res) {
     try {
       let transactions;

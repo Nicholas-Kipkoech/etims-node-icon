@@ -56,6 +56,16 @@ etimsAPIRouter.post("/selectTrnsPurchaseSalesList", (req, res) => {
 etimsAPIRouter.post("/insertTrnsPurchase", (req, res) => {
   etimsController.trnsPurchaseSaveReq(req, res);
 });
+etimsAPIRouter.post("/saveStockMaster", (req, res) => {
+  etimsController.saveStockMaster(req, res);
+});
+
+etimsAPIRouter.post("/selectStockMoveList", (req, res) => {
+  etimsController.lookupStockMaster(req, res);
+});
+etimsAPIRouter.post("/insertStockIO", (req, res) => {
+  etimsController.saveStockIO(req, res);
+});
 etimsAPIRouter.post("/saveTrnsSale", (req, res) => {
   etimsController.openSaveTransSales(req, res);
 });
