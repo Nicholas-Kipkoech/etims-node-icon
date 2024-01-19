@@ -258,6 +258,9 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        cmcKey,
+        tin,
+        bhfId,
       } = req.body;
       const payload = {
         userId,
@@ -273,7 +276,11 @@ class EtimsController {
         modrId,
         modrNm,
       };
-      const data = await this.makeApiRequest("saveBhfUser", payload);
+      const data = await this.makeApiRequest("saveBhfUser", payload, {
+        cmcKey: cmcKey,
+        tin: cmcKey,
+        bhfId: cmcKey,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -291,6 +298,9 @@ class EtimsController {
         regrNm,
         modrId,
         modrNm,
+        cmcKey,
+        tin,
+        bhfId,
       } = req.body;
       const payload = {
         isrcRt,
@@ -302,7 +312,11 @@ class EtimsController {
         modrId,
         modrNm,
       };
-      const data = await this.makeApiRequest("saveBhfInsurance", payload);
+      const data = await this.makeApiRequest("saveBhfInsurance", payload, {
+        cmcKey: cmcKey,
+        tin: cmcKey,
+        bhfId: cmcKey,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -581,6 +595,9 @@ class EtimsController {
         modrNm,
         receipt,
         itemList,
+        cmcKey,
+        tin,
+        bhfId,
       } = req.body;
       const invcNo = generateRandom8DigitNumber();
       const payload = {
@@ -628,7 +645,11 @@ class EtimsController {
         itemList,
       };
 
-      const data = await this.makeApiRequest("insertTrnsPurchase", payload);
+      const data = await this.makeApiRequest("insertTrnsPurchase", payload, {
+        cmcKey: cmcKey,
+        tin: cmcKey,
+        bhfId: cmcKey,
+      });
 
       return res.status(200).json({ response: data });
     } catch (error) {
