@@ -108,6 +108,20 @@ class OrganizationController {
       return res.status(500).json(error);
     }
   }
+
+  async fetchSegment(req, res) {
+    try {
+      const { code } = req.params;
+      const segment = EtimsItemsDb.Segment.findOne({
+        segment_code: code,
+      });
+      return res.status(200).json({ segment });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
   async fetchSegments(req, res) {
     try {
       const segments = await EtimsItemsDb.Segment.find({});
@@ -145,6 +159,16 @@ class OrganizationController {
       });
       await newFamily.save();
       return res.status(200).json({ message: `Family added successfully!` });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+  async fetchFamily(req, res) {
+    try {
+      const { code } = req.params;
+      const family = await EtimsItemsDb.Family.findOne({ family_code: code });
+      return res.status(200).json({ family });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
@@ -198,6 +222,16 @@ class OrganizationController {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: error?.message });
+    }
+  }
+  async fetchClass(req, res) {
+    try {
+      const { code } = req.params;
+      const _class = await EtimsItemsDb.Class.findOne({ class_code: code });
+      return res.status(200).json({ _class });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
     }
   }
   async fetchClasses(req, res) {

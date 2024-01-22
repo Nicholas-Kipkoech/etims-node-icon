@@ -15,8 +15,14 @@ organizationRouter.post("/add/segment", (req, res) => {
 organizationRouter.get("/fetch/segment", (req, res) => {
   organizationController.fetchSegments(req, res);
 });
+organizationRouter.get("/fetch/segment/:code", (req, res) => {
+  organizationController.fetchSegment(req, res);
+});
 organizationRouter.post("/add/family", (req, res) => {
   organizationController.addFamily(req, res);
+});
+organizationRouter.get("/fetch/family/:code", (req, res) => {
+  organizationController.fetchFamily(req, res);
 });
 organizationRouter.get("/fetch/family/:segment_code", (req, res) => {
   organizationController.fetchFamilies(req, res);
@@ -24,6 +30,9 @@ organizationRouter.get("/fetch/family/:segment_code", (req, res) => {
 
 organizationRouter.post("/add/class", (req, res) => {
   organizationController.addClass(req, res);
+});
+organizationRouter.get("/fetch/class/:code", (req, res) => {
+  organizationController.fetchClass(req, res);
 });
 organizationRouter.get("/fetch/classes/:family_code", (req, res) => {
   organizationController.fetchClasses(req, res);

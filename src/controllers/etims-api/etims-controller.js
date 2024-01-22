@@ -2,7 +2,6 @@ import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
-import users from "../../databases/users.js";
 
 config();
 
