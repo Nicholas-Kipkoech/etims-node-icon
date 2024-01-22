@@ -112,7 +112,7 @@ class OrganizationController {
   async fetchSegment(req, res) {
     try {
       const { code } = req.params;
-      const segment = EtimsItemsDb.Segment.findOne({
+      const segment = await EtimsItemsDb.Segment.findOne({
         segment_code: code,
       });
       return res.status(200).json({ segment });
