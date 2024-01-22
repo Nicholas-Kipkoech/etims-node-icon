@@ -24,7 +24,7 @@ organizationRouter.post("/add/family", (req, res) => {
 organizationRouter.get("/fetch/family/:code", (req, res) => {
   organizationController.fetchFamily(req, res);
 });
-organizationRouter.get("/fetch/family/:segment_code", (req, res) => {
+organizationRouter.get("/fetch/families/:segment_code", (req, res) => {
   organizationController.fetchFamilies(req, res);
 });
 
