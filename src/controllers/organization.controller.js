@@ -61,6 +61,7 @@ class OrganizationController {
         business_class: new_org?.business_class,
         business_segment: new_org?.business_segment,
         business_family: new_org?.business_family,
+        created_at: new_org?.created_at,
       });
       await new_org.save();
       return res.status(200).json({ organization: new_org });

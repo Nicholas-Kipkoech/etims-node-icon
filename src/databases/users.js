@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   business_class: { type: String },
   business_segment: { type: String },
   business_family: { type: String },
+  created_at: { type: Date },
 });
 
 const Superadmin = mongoose.model("Superadmin", superadminSchema);

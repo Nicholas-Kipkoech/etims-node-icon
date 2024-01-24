@@ -26,6 +26,7 @@ class UserController {
         role: newSuperAdmin.role,
         email: newSuperAdmin.email,
         password: newSuperAdmin.password,
+        created_at: newSuperAdmin.created_at,
       });
       await newSuperAdmin.save();
       return res.status(200).json({ superadmin: newSuperAdmin });
