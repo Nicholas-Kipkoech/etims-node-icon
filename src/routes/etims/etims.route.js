@@ -7,6 +7,9 @@ const etimsAPIRouter = Router();
 etimsAPIRouter.post("/initialize", (req, res) => {
   etimsController.initializeDevice(req, res);
 });
+etimsAPIRouter.post("/cb", (req, res) => {
+  etimsController.returnResponse(req, res);
+});
 etimsAPIRouter.post("/selectCodeList", (req, res) => {
   etimsController.getCodeList(req, res);
 });

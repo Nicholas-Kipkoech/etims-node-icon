@@ -47,13 +47,19 @@ class EtimsController {
     }
   }
 
-  async returnResponse(request) {
+  async returnResponse(payload) {
     try {
-      await axios.post("url", JSON.stringify(request));
+      console.log("payload...", payload);
+      const response = await axios.post(
+        "https://ae14-41-139-142-210.ngrok-free.app/Etims/oscu_init_callback",
+        {
+          payload,
+        }
+      );
       console.log("request sent to BIMA");
+      console.log("Response from server:", response);
     } catch (error) {
       console.error(error);
-      return res.status(500).json(error);
     }
   }
 
@@ -523,7 +529,7 @@ class EtimsController {
       await txResponse.save();
       return res
         .status(200)
-        .json({ txResponse: txResponse, transaction: newTransaction });
+        .json({ response: txResponse, transaction: newTransaction });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
