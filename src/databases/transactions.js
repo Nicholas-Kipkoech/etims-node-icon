@@ -89,6 +89,7 @@ const transactionResponse = new mongoose.Schema({
   resultCd: { type: String },
   resultMsg: { type: String },
   resultDt: { type: String },
+  invoiceNumber: { type: Number },
   invoiceAmt: { type: Number },
   clientName: { type: String },
   taxAmt: { type: Number },

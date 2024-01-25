@@ -520,6 +520,7 @@ class EtimsController {
         resultCd: resultCd,
         resultMsg: resultMsg,
         resultDt: resultDt,
+        invoiceNumber: newTransaction.invcNo,
         invoiceAmt: newTransaction.totAmt,
         taxAmt: newTransaction.totTaxAmt,
         clientName: newTransaction?.custNm,
