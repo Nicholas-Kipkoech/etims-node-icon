@@ -531,7 +531,11 @@ class EtimsController {
       await txResponse.save();
       return res
         .status(200)
-        .json({ response: txResponse, transaction: newTransaction });
+        .json({
+          etimsResponse: txResponse,
+          transaction: newTransaction,
+          response: data,
+        });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
