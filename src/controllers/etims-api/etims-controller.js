@@ -715,7 +715,7 @@ class EtimsController {
 
       return res
         .status(200)
-        .json({ transactions: transactions, txResponse: txResponse });
+        .json({ transactions: transactions, response: txResponse });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
