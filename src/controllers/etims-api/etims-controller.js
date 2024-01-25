@@ -600,12 +600,13 @@ class EtimsController {
         modrId,
         modrNm,
         receipt,
+        invcNo,
         itemList,
         cmcKey,
         tin,
         bhfId,
       } = req.body;
-      const invcNo = generateRandom8DigitNumber();
+
       const payload = {
         orgInvcNo,
         invcNo,
