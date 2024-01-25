@@ -32,11 +32,14 @@ class EtimsController {
   async initializeDevice(req, res) {
     try {
       const { dvcSrlNo, tin, bhfId } = req.body;
-      const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
-        dvcSrlNo: dvcSrlNo,
-        tin: tin,
-        bhfId: bhfId,
-      });
+      const response = await axios.post(
+        `https://ae14-41-139-142-210.ngrok-free.app/Etims/oscu_init`,
+        {
+          dvcSrlNo: dvcSrlNo,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
       return res.status(200).json(response.data);
     } catch (error) {
       return res.status(500).json(error);
@@ -499,6 +502,9 @@ class EtimsController {
         resultCd: resultCd,
         resultMsg: resultMsg,
         resultDt: resultDt,
+        invoiceAmt: newTransaction.totAmt,
+        taxAmt: newTransaction.totTaxAmt,
+        clientName: newTransaction?.custNm,
         intrlData: _data.intrlData,
         rcptSign: _data.rcptSign,
         sdcDateTime: _data.sdcDateTime,
