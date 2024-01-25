@@ -40,8 +40,19 @@ class EtimsController {
           bhfId: bhfId,
         }
       );
+      await this.returnResponse(response.data);
       return res.status(200).json(response.data);
     } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+
+  async returnResponse(request) {
+    try {
+      await axios.post("url", JSON.stringify(request));
+      console.log("request sent to BIMA");
+    } catch (error) {
+      console.error(error);
       return res.status(500).json(error);
     }
   }
