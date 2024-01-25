@@ -362,6 +362,7 @@ class EtimsController {
   async trnsSalesSaveWrReq(req, res) {
     try {
       const {
+        invcNo,
         trdInvcNo,
         orgInvcNo,
         custTin,
@@ -405,7 +406,7 @@ class EtimsController {
         receipt,
         itemList,
       } = req.body;
-      const invcNo = generateRandom8DigitNumber();
+
       const payload = {
         trdInvcNo,
         invcNo,
