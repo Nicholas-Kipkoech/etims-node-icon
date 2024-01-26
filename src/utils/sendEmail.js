@@ -38,3 +38,33 @@ export const sendEmail = (to, subject, password, organization) => {
     }
   });
 };
+
+export const sendCustomEmail = (to, subject, cmcKey, pin) => {
+  const htmlTemplate2 = `
+    <div style={{font-size:16px}}>
+      <p>Hello ${to}, Hello Here is the credentials!!!</strong>.</p>
+      <p>Your one-time login credentials are:</p>
+      <ul>
+        <li><strong>CMCKEY:</strong> ${cmcKey}</li>
+        <li><strong>PIN:</strong> ${pin}</li>
+      </ul>
+      <p>Please login and update your password as soon as possible using the link below:</p>
+      <a href="https://icon-x-kra.vercel.app">Login Link</a>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: process.env.EMAIL_HOST,
+    to,
+    subject,
+    html: htmlTemplate2,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Email sending error:", error);
+    } else {
+      console.log("Email sent:", info.response);
+    }
+  });
+};

@@ -2,6 +2,7 @@ import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
+import { sendCustomEmail } from "../../utils/sendEmail.js";
 
 config();
 
@@ -47,15 +48,14 @@ class EtimsController {
 
   async returnResponse(payload) {
     try {
-      console.log("payload...", payload);
-      const response = await axios.post(
-        `${this.ngrok_url}/Etims/oscu_init_callback`,
-        {
-          payload,
-        }
+      await sendCustomEmail(
+        "ckipkorir@iconsoft.co",
+        "KRA CREDENTIALS",
+        payload.data.info.cmcKey,
+        payload.data.info.tin
       );
       console.log("request sent to BIMA");
-      console.log("Response from server:", response);
+      console.log("Response from server:");
     } catch (error) {
       console.error(error);
     }
