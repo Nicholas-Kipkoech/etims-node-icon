@@ -34,7 +34,7 @@ class EtimsController {
   async initializeDevice(req, res) {
     try {
       const { dvcSrlNo, tin, bhfId } = req.body;
-      const response = await axios.post(`${this.ngrok_url}/Etims/oscu_init`, {
+      const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
         dvcSrlNo: dvcSrlNo,
         tin: tin,
         bhfId: bhfId,
