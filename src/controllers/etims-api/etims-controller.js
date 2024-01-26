@@ -529,7 +529,7 @@ class EtimsController {
       await txResponse.save();
       const _BimaResponse = new transactionsDb.BimaResponse({
         invoiceNumber: newTransaction.invcNo,
-        response: _data,
+        response: data,
       });
       console.log(_BimaResponse);
       await _BimaResponse.save();
