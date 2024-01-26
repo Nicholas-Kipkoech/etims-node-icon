@@ -98,6 +98,12 @@ const transactionResponse = new mongoose.Schema({
   sdcDateTime: { type: String },
 });
 
+const bimaResponse = new mongoose.Schema({
+  invoiceNumber: { type: String },
+  response: { type: Object },
+  createdAt: { type: Date, default: Date.now() },
+});
+
 const companyEtimsDetails = new mongoose.Schema({
   companyID: { type: String },
   kraPIN: { type: String },
@@ -134,6 +140,7 @@ const BimaTransaction = mongoose.model(
 );
 
 const ApiLog = mongoose.model("ApiLog", apiLogSchema);
+const BimaResponse = mongoose.model("BimaResponse", bimaResponse);
 
 export default {
   Transactions,
@@ -141,4 +148,5 @@ export default {
   CompanyDetails,
   ApiLog,
   BimaTransaction,
+  BimaResponse,
 };

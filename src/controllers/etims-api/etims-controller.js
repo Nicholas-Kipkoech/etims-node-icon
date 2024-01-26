@@ -527,6 +527,12 @@ class EtimsController {
         sdcDateTime: _data.sdcDateTime,
       });
       await txResponse.save();
+      const _BimaResponse = new transactionsDb.BimaResponse({
+        invoiceNumber: newTransaction.invcNo,
+        response: _data,
+      });
+      console.log(_BimaResponse);
+      await _BimaResponse.save();
       return res.status(200).json({
         etimsResponse: txResponse,
         transaction: newTransaction,
@@ -537,6 +543,22 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
+
+  async fetchBimaResponse(req, res) {
+    try {
+      const { invoiceNumber } = req.body;
+      const response = await transactionsDb.BimaResponse.findOne({
+        invoiceNumber: invoiceNumber,
+      });
+      if (response) {
+        return res.status(200).json({ response });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
   async trnsPurchaseSalesReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;

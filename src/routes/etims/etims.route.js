@@ -53,6 +53,9 @@ etimsAPIRouter.post("/updateImportItem", (req, res) => {
 etimsAPIRouter.post("/saveTrnsSalesOsdc", (req, res) => {
   etimsController.trnsSalesSaveWrReq(req, res);
 });
+etimsAPIRouter.get("/getResponse", (req, res) => {
+  etimsController.fetchBimaResponse(req, res);
+});
 etimsAPIRouter.post("/selectTrnsPurchaseSalesList", (req, res) => {
   etimsController.trnsPurchaseSalesReq(req, res);
 });
