@@ -546,7 +546,7 @@ class EtimsController {
 
   async fetchBimaResponse(req, res) {
     try {
-      const { invoiceNumber } = req.body;
+      const { invoiceNumber } = req.params;
       const response = await transactionsDb.BimaResponse.findOne({
         invoiceNumber: invoiceNumber,
       });
