@@ -8,6 +8,7 @@ config();
 class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
+    this.ngrok_url = "https://6d7e-105-27-207-82.ngrok-free.app";
     this.defaultHeaders = {
       cmcKey: process.env.CMCKEY,
       tin: process.env.TIN,
@@ -32,14 +33,11 @@ class EtimsController {
   async initializeDevice(req, res) {
     try {
       const { dvcSrlNo, tin, bhfId } = req.body;
-      const response = await axios.post(
-        `https://ae14-41-139-142-210.ngrok-free.app/Etims/oscu_init`,
-        {
-          dvcSrlNo: dvcSrlNo,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const response = await axios.post(`${this.ngrok_url}/Etims/oscu_init`, {
+        dvcSrlNo: dvcSrlNo,
+        tin: tin,
+        bhfId: bhfId,
+      });
       await this.returnResponse(response.data);
       return res.status(200).json(response.data);
     } catch (error) {
@@ -51,7 +49,7 @@ class EtimsController {
     try {
       console.log("payload...", payload);
       const response = await axios.post(
-        "https://ae14-41-139-142-210.ngrok-free.app/Etims/oscu_init_callback",
+        `${this.ngrok_url}/Etims/oscu_init_callback`,
         {
           payload,
         }
@@ -529,13 +527,11 @@ class EtimsController {
         sdcDateTime: _data.sdcDateTime,
       });
       await txResponse.save();
-      return res
-        .status(200)
-        .json({
-          etimsResponse: txResponse,
-          transaction: newTransaction,
-          response: data,
-        });
+      return res.status(200).json({
+        etimsResponse: txResponse,
+        transaction: newTransaction,
+        response: data,
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
