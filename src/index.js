@@ -47,3 +47,5 @@ app.get("/", (req, res) => {
 app.use("/api/user", usersRouter);
 app.use("/api/organization", organizationRouter);
 app.use("/api/etims", etimsAPIRouter);
+
+export { io };

@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
 import { sendCustomEmail } from "../../utils/sendEmail.js";
+import { io } from "../../index.js";
 
 config();
 
@@ -531,6 +532,7 @@ class EtimsController {
         invoiceNumber: newTransaction.invcNo,
         response: data,
       });
+      io.emit("invoice_submitted", { message: "Sales invoice was submmitted" });
       console.log(_BimaResponse);
       await _BimaResponse.save();
       return res.status(200).json({
