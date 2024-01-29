@@ -565,7 +565,7 @@ class EtimsController {
     try {
       const notifications = await transactionsDb.Notification.find({}).sort({
         read_status: 1,
-        send_date: -1,
+        send_date: 1,
       });
 
       if (notifications) {
