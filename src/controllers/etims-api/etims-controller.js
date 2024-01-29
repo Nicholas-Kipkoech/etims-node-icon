@@ -563,7 +563,11 @@ class EtimsController {
 
   async fetchNotifications(req, res) {
     try {
-      const notifications = await transactionsDb.Notification.find({});
+      const notifications = await transactionsDb.Notification.find({}).sort({
+        read_status: 1,
+        send_date: -1,
+      });
+
       if (notifications) {
         return res.status(200).json({ notifications });
       }

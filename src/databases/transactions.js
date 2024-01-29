@@ -120,6 +120,7 @@ const notificationSchema = new mongoose.Schema({
   from: { type: String },
   message: { type: String },
   send_date: { type: Date, default: Date.now() },
+  read_status: { type: Boolean, default: false },
 });
 
 const apiLogSchema = new mongoose.Schema({
