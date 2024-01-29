@@ -67,7 +67,7 @@ class OrganizationController {
       await users.User.create({
         name: organization_name,
         email: organization_email,
-        role: "Organization_user",
+        role: "Admin",
         password: genPassword,
         userId: new_org?._id,
         organization_id: new_org?._id,
