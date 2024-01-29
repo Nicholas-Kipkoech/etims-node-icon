@@ -23,7 +23,7 @@ const server = app.listen(port, () =>
 const io = new Server(server, {
   serveClient: true,
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
   methods: ["GET", "POST"],
   // other options...
