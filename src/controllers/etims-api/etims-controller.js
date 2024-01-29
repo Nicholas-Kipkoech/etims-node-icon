@@ -802,11 +802,11 @@ class EtimsController {
         organizationID
       );
 
-      const transaction = await transactionsDb.Transactions.findOne({
+      const transaction = await transactionsDb.Transactions.find({
         organization: organization._id,
       });
 
-      const transactionResponse = await transactionsDb.TxResponse.findOne({
+      const transactionResponse = await transactionsDb.TxResponse.find({
         organization: organization._id,
       });
 
