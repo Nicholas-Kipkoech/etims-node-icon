@@ -70,6 +70,7 @@ class OrganizationController {
         role: "Organization_user",
         password: genPassword,
         userId: new_org?._id,
+        organization_id: new_org?._id,
         business_class: new_org?.business_class,
         business_segment: new_org?.business_segment,
         business_family: new_org?.business_family,

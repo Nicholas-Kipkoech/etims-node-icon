@@ -564,8 +564,8 @@ class EtimsController {
         message: `A new invoice has been submitted: invoice number ${newTransaction?.invcNo}`,
         send_date: Date.now(),
       });
-      await newNotification.save();
       io.emit("notification");
+      await newNotification.save();
 
       await _BimaResponse.save();
       return res.status(200).json({
@@ -795,12 +795,12 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
-  async fetchTransactionsByEmail(req, res) {
+  async fetchTransactionsByOrganizationID(req, res) {
     try {
-      const { email } = req.params;
-      const organization = await OrganizationDTO.Organization.findOne({
-        organization_email: email,
-      });
+      const { organizationID } = req.params;
+      const organization = await OrganizationDTO.Organization.findById(
+        organizationID
+      );
 
       const transaction = await transactionsDb.Transactions.findOne({
         organization: organization._id,
