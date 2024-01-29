@@ -805,9 +805,20 @@ class EtimsController {
       const transaction = await transactionsDb.Transactions.findOne({
         organization: organization._id,
       });
+
       const transactionResponse = await transactionsDb.TxResponse.findOne({
         organization: organization._id,
       });
+
+      // Check if either transaction or transactionResponse is null
+      if (!transaction || !transactionResponse) {
+        // Return an empty array or handle the empty case as needed
+        return res.status(200).json({
+          transaction: [],
+          transactionResponse: [],
+        });
+      }
+
       return res.status(200).json({
         transaction: transaction,
         transactionResponse: transactionResponse,
