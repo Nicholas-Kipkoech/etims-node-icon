@@ -85,7 +85,9 @@ class OrganizationController {
 
   async fetchOrganizations(req, res) {
     try {
-      const registered_organizations = await Organization.find({});
+      const registered_organizations = await OrganizationDTO.Organization.find(
+        {}
+      );
       if (registered_organizations) {
         return res.status(200).json({ registered_organizations });
       }
