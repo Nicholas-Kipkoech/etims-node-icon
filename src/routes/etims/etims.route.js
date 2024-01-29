@@ -80,10 +80,10 @@ etimsAPIRouter.get("/fetch-transactions", (req, res) => {
 });
 
 etimsAPIRouter.get(
-  "/fetch-transactions/:transactionID",
-  authenticateJWT,
+  "/fetch-transactions/:email",
+  // authenticateJWT,
   (req, res) => {
-    etimsController.fetchTransactionsById(req, res);
+    etimsController.fetchTransactionsByEmail(req, res);
   }
 );
 etimsAPIRouter.get("/apiLogs", (req, res) => {

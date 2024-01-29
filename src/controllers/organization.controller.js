@@ -1,4 +1,4 @@
-import Organization from "../databases/organizations.js";
+import OrganizationDTO from "../databases/organizations.js";
 import users from "../databases/users.js";
 import {
   validateClass,
@@ -7,9 +7,12 @@ import {
   validateOrg,
   validateSegment,
 } from "../middlewares/validation.js";
-import { generateRandom8DigitNumber } from "../utils/helpers.js";
+import {
+  generateOrganizationAPIKey,
+  generateRandom8DigitNumber,
+} from "../utils/helpers.js";
 import passHash from "../utils/passHash.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import { sendCustomEmail, sendEmail } from "../utils/sendEmail.js";
 import EtimsItemsDb from "../databases/ETIMS-items.js";
 
 class OrganizationController {
@@ -28,7 +31,8 @@ class OrganizationController {
       if (error) {
         return res.status(400).json({ error: error.message });
       }
-      const checkOrganization = await Organization.findOne({
+
+      const checkOrganization = await OrganizationDTO.Organization.findOne({
         organization_email: organization_email,
       });
       if (checkOrganization) {
@@ -36,7 +40,7 @@ class OrganizationController {
       }
       const random8digit = generateRandom8DigitNumber().toString();
       const genPassword = await passHash.encrypt(random8digit);
-      const new_org = new Organization({
+      const new_org = new OrganizationDTO.Organization({
         organization_email,
         organization_name,
         organization_phone,
@@ -45,11 +49,19 @@ class OrganizationController {
         business_class,
       });
 
+      const generatedKey = generateOrganizationAPIKey();
+      const newKey = new OrganizationDTO.APICredentials({
+        organization: new_org._id,
+        clientKey: generatedKey,
+        created_at: Date.now(),
+      });
+      await newKey.save();
       sendEmail(
         organization_email,
         "Account Creation",
         random8digit,
-        organization_name
+        organization_name,
+        generatedKey
       );
 
       await users.User.create({

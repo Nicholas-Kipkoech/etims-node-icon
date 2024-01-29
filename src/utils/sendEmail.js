@@ -9,15 +9,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (to, subject, password, organization) => {
+export const sendEmail = (to, subject, password, organization, clientKey) => {
   const htmlTemplate = `
     <div style={{font-size:16px}}>
       <p>Hello ${to}, Your account was successfully created for <strong>${organization}</strong>.</p>
       <p>Your one-time login credentials are:</p>
       <ul>
-        <li><strong>Username:</strong> ${to}</li>
+        <li><strong>Email:</strong> ${to}</li>
         <li><strong>Password:</strong> ${password}</li>
       </ul>
+
+      <p> Your generated API credentials are as follows, 
+      this will be used for making an API calls to our service</p>
+
+      <ul>
+        <li><strong>CLIENT KEY:</strong> ${clientKey}</li>
+      </ul>
+
       <p>Please login and update your password as soon as possible using the link below:</p>
       <a href="https://icon-x-kra.vercel.app">Login Link</a>
     </div>
@@ -39,17 +47,14 @@ export const sendEmail = (to, subject, password, organization) => {
   });
 };
 
-export const sendCustomEmail = (to, subject, cmcKey, pin) => {
+export const sendCustomEmail = (to, subject, key, value) => {
   const htmlTemplate2 = `
     <div style={{font-size:16px}}>
-      <p>Hello ${to}, Hello Here is the credentials!!!</strong>.</p>
-      <p>Your one-time login credentials are:</p>
+      <p>Hello ${to}, Hello Here is the API credentials!!!</strong>.</p>
       <ul>
-        <li><strong>CMCKEY:</strong> ${cmcKey}</li>
-        <li><strong>PIN:</strong> ${pin}</li>
+        <li><strong>CLIENT SECRET:</strong> ${key}</li>
+        <li><strong>Organization:</strong> ${value}</li>
       </ul>
-      <p>Please login and update your password as soon as possible using the link below:</p>
-      <a href="https://icon-x-kra.vercel.app">Login Link</a>
     </div>
   `;
 

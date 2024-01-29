@@ -10,5 +10,15 @@ const organizationSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now() },
 });
 
+const organizationAPICredentials = new mongoose.Schema({
+  organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
+  clientKey: { type: String, unique: true },
+  created_at: { type: Date, default: Date.now() },
+});
+
 const Organization = mongoose.model("Organization", organizationSchema);
-export default Organization;
+const APICredentials = mongoose.model(
+  "APICredentials",
+  organizationAPICredentials
+);
+export default { Organization, APICredentials };

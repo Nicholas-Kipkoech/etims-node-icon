@@ -2,7 +2,7 @@ import axios from "axios";
 import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
-import { sendCustomEmail } from "../../utils/sendEmail.js";
+import OrganizationDTO from "../../databases/organizations.js";
 import { io } from "../../index.js";
 
 config();
@@ -413,8 +413,22 @@ class EtimsController {
         modrNm,
         receipt,
         itemList,
+        clientKey,
       } = req.body;
 
+      const client_key = await OrganizationDTO.APICredentials.findOne({
+        clientKey: clientKey,
+      });
+      if (!client_key) {
+        return res.status(404).json({ error: "Client key not found" });
+      }
+
+      const organization = await OrganizationDTO.Organization.findById(
+        client_key.organization
+      );
+      if (!organization) {
+        return res.status(404).json({ error: "Organization doesn't exist" });
+      }
       const payload = {
         trdInvcNo,
         invcNo,
@@ -468,8 +482,10 @@ class EtimsController {
         tin: process.env.TIN,
         bhfId: process.env.BHFID,
       });
+
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
+          organization: organization,
           transactionID: transactionID,
           trdInvcNo,
           invcNo,
@@ -515,6 +531,7 @@ class EtimsController {
           receipt,
           itemList,
         });
+
         await newTransaction.save();
       } else {
         // Handle the case where resultCd is not "000"
@@ -524,6 +541,7 @@ class EtimsController {
       const { resultCd, resultMsg, resultDt, data: _data } = data;
 
       const txResponse = new transactionsDb.TxResponse({
+        organization: newTransaction.organization,
         transactionID: newTransaction.transactionID,
         resultCd: resultCd,
         resultMsg: resultMsg,
@@ -542,7 +560,7 @@ class EtimsController {
         response: data,
       });
       const newNotification = new transactionsDb.Notification({
-        from: "Bima ERP",
+        from: organization.organization_name,
         message: `A new invoice has been submitted: invoice number ${newTransaction?.invcNo}`,
         send_date: Date.now(),
       });
@@ -777,14 +795,18 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
-  async fetchTransactionsById(req, res) {
+  async fetchTransactionsByEmail(req, res) {
     try {
-      const { transactionID } = req.params;
-      const transaction = await transactionsDb.Transactions.findById(
-        transactionID
-      );
+      const { email } = req.params;
+      const organization = await OrganizationDTO.Organization.findOne({
+        organization_email: email,
+      });
+
+      const transaction = await transactionsDb.Transactions.findOne({
+        organization: organization._id,
+      });
       const transactionResponse = await transactionsDb.TxResponse.findOne({
-        transactionID: transaction.transactionID,
+        organization: organization._id,
       });
       return res.status(200).json({
         transaction: transaction,
