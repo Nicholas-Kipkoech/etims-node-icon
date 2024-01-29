@@ -116,6 +116,7 @@ const companyEtimsDetails = new mongoose.Schema({
 });
 
 const notificationSchema = new mongoose.Schema({
+  organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
   from: { type: String },
   message: { type: String },
   send_date: { type: Date, default: Date.now() },

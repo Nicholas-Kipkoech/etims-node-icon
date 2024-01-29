@@ -560,6 +560,7 @@ class EtimsController {
         response: data,
       });
       const newNotification = new transactionsDb.Notification({
+        organization: organization._id,
         from: organization.organization_name,
         message: `A new invoice has been submitted: invoice number ${newTransaction?.invcNo}`,
         send_date: Date.now(),
@@ -582,6 +583,27 @@ class EtimsController {
   async fetchNotifications(req, res) {
     try {
       const notifications = await transactionsDb.Notification.find({}).sort({
+        read_status: 1,
+        send_date: -1,
+      });
+
+      if (notifications) {
+        return res.status(200).json({ notifications });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+  async fetchNotificationsById(req, res) {
+    try {
+      const { organizationID } = req.params;
+      const organization = await OrganizationDTO.Organization.findById(
+        organizationID
+      );
+      const notifications = await transactionsDb.Notification.find({
+        organization: organization._id,
+      }).sort({
         read_status: 1,
         send_date: -1,
       });

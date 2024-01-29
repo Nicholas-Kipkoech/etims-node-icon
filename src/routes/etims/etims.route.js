@@ -95,5 +95,8 @@ etimsAPIRouter.get("/bimaTxs", (req, res) => {
 etimsAPIRouter.get("/notifications", (req, res) => {
   etimsController.fetchNotifications(req, res);
 });
+etimsAPIRouter.get("/notifications/organizationID", (req, res) => {
+  etimsController.fetchNotificationsById(req, res);
+});
 
 export default etimsAPIRouter;
