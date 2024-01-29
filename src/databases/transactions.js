@@ -116,6 +116,12 @@ const companyEtimsDetails = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now() },
 });
 
+const notificationSchema = new mongoose.Schema({
+  from: { type: String },
+  message: { type: String },
+  send_date: { type: Date, default: Date.now() },
+});
+
 const apiLogSchema = new mongoose.Schema({
   request_type: String,
   request: String,
@@ -141,6 +147,7 @@ const BimaTransaction = mongoose.model(
 
 const ApiLog = mongoose.model("ApiLog", apiLogSchema);
 const BimaResponse = mongoose.model("BimaResponse", bimaResponse);
+const Notification = mongoose.model("Notification", notificationSchema);
 
 export default {
   Transactions,
@@ -149,4 +156,5 @@ export default {
   ApiLog,
   BimaTransaction,
   BimaResponse,
+  Notification,
 };

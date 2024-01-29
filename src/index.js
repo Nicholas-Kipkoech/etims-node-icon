@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
   socket.on("notification", (notification) => {
     io.emit("notification", notification);
   });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

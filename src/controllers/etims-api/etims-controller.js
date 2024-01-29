@@ -40,6 +40,14 @@ class EtimsController {
         tin: tin,
         bhfId: bhfId,
       });
+      const notification = new transactionsDb.Notification({
+        from: "Device Initialization",
+        message: "Device has been initialized!!!",
+        send_date: Date.now(),
+      });
+      await notification.save();
+      io.emit("notification");
+
       await this.returnResponse(response.data);
       return res.status(200).json(response.data);
     } catch (error) {
@@ -48,13 +56,14 @@ class EtimsController {
   }
 
   async returnResponse(payload) {
+    console.log(payload);
     try {
-      await sendCustomEmail(
-        "ckipkorir@iconsoft.co",
-        "KRA CREDENTIALS",
-        payload.data.info.cmcKey,
-        payload.data.info.tin
-      );
+      // sendCustomEmail(
+      //   "ckipkorir@iconsoft.co",
+      //   "KRA CREDENTIALS",
+      //   payload.data?.info.cmcKey,
+      //   payload.data?.info.tin
+      // );
       console.log("request sent to BIMA");
       console.log("Response from server:");
     } catch (error) {
@@ -532,14 +541,32 @@ class EtimsController {
         invoiceNumber: newTransaction.invcNo,
         response: data,
       });
-      io.emit("invoice_submitted", { message: "Sales invoice was submmitted" });
-      console.log(_BimaResponse);
+      const newNotification = new transactionsDb.Notification({
+        from: "Bima ERP",
+        message: `A new invoice has been submitted: invoice number ${newTransaction?.invcNo}`,
+        send_date: Date.now(),
+      });
+      await newNotification.save();
+      io.emit("notification");
+
       await _BimaResponse.save();
       return res.status(200).json({
         etimsResponse: txResponse,
         transaction: newTransaction,
         response: data,
       });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  async fetchNotifications(req, res) {
+    try {
+      const notifications = await transactionsDb.Notification.find({});
+      if (notifications) {
+        return res.status(200).json({ notifications });
+      }
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
