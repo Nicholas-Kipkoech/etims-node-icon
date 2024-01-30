@@ -80,6 +80,7 @@ const transactionSchema = mongoose.Schema({
   modrNm: { type: String, required: true },
   receipt: { type: receiptSchema, default: {} },
   itemList: [itemSchema],
+  createdAt: { type: Date, default: Date.now() },
 });
 
 const transactionResponse = new mongoose.Schema({
@@ -92,6 +93,8 @@ const transactionResponse = new mongoose.Schema({
   invoiceAmt: { type: Number },
   clientName: { type: String },
   taxAmt: { type: Number },
+  dateSent: { type: Date, default: Date.now() },
+  status: { type: String },
   intrlData: { type: String },
   rcptSign: { type: String },
   sdcDateTime: { type: String },

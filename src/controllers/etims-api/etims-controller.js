@@ -530,6 +530,7 @@ class EtimsController {
           modrNm,
           receipt,
           itemList,
+          createdAt: Date.now(),
         });
 
         await newTransaction.save();
@@ -550,6 +551,7 @@ class EtimsController {
         invoiceAmt: newTransaction.totAmt,
         taxAmt: newTransaction.totTaxAmt,
         clientName: newTransaction?.custNm,
+        dateSent: newTransaction.createdAt,
         intrlData: _data.intrlData,
         rcptSign: _data.rcptSign,
         sdcDateTime: _data.sdcDateTime,
