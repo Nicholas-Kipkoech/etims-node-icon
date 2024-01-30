@@ -108,7 +108,9 @@ class UserController {
       const { role } = req.user;
       let users;
       if (role === "Superadmin") {
-        users = await UsersDTO.User.find({});
+        users = (await UsersDTO.User.find({})).filter(
+          (user) => user.role !== "Superadmin"
+        );
       } else {
         users = await UsersDTO.User.find({
           organization_id: req.user.organization_id,
