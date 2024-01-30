@@ -791,17 +791,32 @@ class EtimsController {
   async fetchTransactions(req, res) {
     try {
       const { role } = req.user;
+      const { invoiceNumber, status, invoiceAmount } = req.query;
 
-      let txResponse;
+      let txResponseQuery = {};
+
       if (role === "Superadmin") {
-        txResponse = await transactionsDb.TxResponse.find({}).sort({
-          dateSent: -1,
-        });
+        txResponseQuery = {};
       } else {
-        txResponse = await transactionsDb.TxResponse.find({
-          organization: req.user.organization_id,
-        }).sort({ dateSent: -1 });
+        txResponseQuery.organization = req.user.organization_id;
       }
+
+      // Add additional filters based on query parameters
+      if (invoiceNumber) {
+        txResponseQuery.invoiceNumber = invoiceNumber;
+      }
+      if (status) {
+        txResponseQuery.status = status;
+      }
+      if (invoiceAmount) {
+        // Assuming invoiceAmount is a numeric field
+        txResponseQuery.invoiceAmt = { $eq: parseFloat(invoiceAmount) };
+      }
+
+      const txResponse = await transactionsDb.TxResponse.find(
+        txResponseQuery
+      ).sort({ dateSent: -1 });
+
       return res.status(200).json({ response: txResponse });
     } catch (error) {
       console.error(error);
