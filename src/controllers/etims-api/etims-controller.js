@@ -580,35 +580,23 @@ class EtimsController {
 
   async fetchNotifications(req, res) {
     try {
-      const notifications = await transactionsDb.Notification.find({}).sort({
-        read_status: 1,
-        send_date: -1,
-      });
-
-      if (notifications) {
-        return res.status(200).json({ notifications });
+      const { role } = req.user;
+      let notifications;
+      if (role === "Superadmin") {
+        notifications = await transactionsDb.Notification.find({}).sort({
+          read_status: 1,
+          send_date: -1,
+        });
+      } else {
+        notifications = await transactionsDb.Notification.find({
+          organization: req.user.organization_id,
+        }).sort({
+          read_status: 1,
+          send_date: -1,
+        });
       }
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json(error);
-    }
-  }
-  async fetchNotificationsById(req, res) {
-    try {
-      const { organizationID } = req.params;
-      const organization = await OrganizationDTO.Organization.findById(
-        organizationID
-      );
-      const notifications = await transactionsDb.Notification.find({
-        organization: organization._id,
-      }).sort({
-        read_status: 1,
-        send_date: -1,
-      });
 
-      if (notifications) {
-        return res.status(200).json({ notifications });
-      }
+      return res.status(200).json({ notifications });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
