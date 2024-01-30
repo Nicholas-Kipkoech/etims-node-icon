@@ -79,7 +79,7 @@ etimsAPIRouter.get("/fetch-transactions", authenticateJWT, (req, res) => {
   etimsController.fetchTransactions(req, res);
 });
 
-etimsAPIRouter.get("/notifications", (req, res) => {
+etimsAPIRouter.get("/notifications", authenticateJWT, (req, res) => {
   etimsController.fetchNotifications(req, res);
 });
 
