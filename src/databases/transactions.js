@@ -100,24 +100,6 @@ const transactionResponse = new mongoose.Schema({
   sdcDateTime: { type: String },
 });
 
-const bimaResponse = new mongoose.Schema({
-  invoiceNumber: { type: String },
-  response: { type: Object },
-  createdAt: { type: Date, default: Date.now() },
-});
-
-const companyEtimsDetails = new mongoose.Schema({
-  companyID: { type: String },
-  kraPIN: { type: String },
-  branchId: { type: String },
-  taxPayerName: { type: String },
-  managerName: { type: String },
-  branchName: { type: String },
-  cmcKey: { type: String },
-  deviceId: { type: String },
-  createdAt: { type: Date, default: Date.now() },
-});
-
 const notificationSchema = new mongoose.Schema({
   organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
   from: { type: String },
@@ -126,39 +108,12 @@ const notificationSchema = new mongoose.Schema({
   read_status: { type: Boolean, default: false },
 });
 
-const apiLogSchema = new mongoose.Schema({
-  request_type: String,
-  request: String,
-  status: String,
-  created_at: { type: Date, default: Date.now() },
-});
-
-const BIMAtransactionSchema = new mongoose.Schema({
-  requestID: String,
-  request: String,
-  message: String,
-  response: String,
-  created_at: { type: Date, default: Date.now() },
-});
-
 const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
-const CompanyDetails = mongoose.model("CompanyDetails", companyEtimsDetails);
-const BimaTransaction = mongoose.model(
-  "BimaTransaction",
-  BIMAtransactionSchema
-);
-
-const ApiLog = mongoose.model("ApiLog", apiLogSchema);
-const BimaResponse = mongoose.model("BimaResponse", bimaResponse);
 const Notification = mongoose.model("Notification", notificationSchema);
 
 export default {
-  Transactions,
   TxResponse,
-  CompanyDetails,
-  ApiLog,
-  BimaTransaction,
-  BimaResponse,
   Notification,
+  Transactions,
 };

@@ -552,15 +552,13 @@ class EtimsController {
         taxAmt: newTransaction.totTaxAmt,
         clientName: newTransaction?.custNm,
         dateSent: newTransaction.createdAt,
+        status: "Success",
         intrlData: _data.intrlData,
         rcptSign: _data.rcptSign,
         sdcDateTime: _data.sdcDateTime,
       });
       await txResponse.save();
-      const _BimaResponse = new transactionsDb.BimaResponse({
-        invoiceNumber: newTransaction.invcNo,
-        response: data,
-      });
+
       const newNotification = new transactionsDb.Notification({
         organization: organization._id,
         from: organization.organization_name,
@@ -569,8 +567,6 @@ class EtimsController {
       });
       io.emit("notification");
       await newNotification.save();
-
-      await _BimaResponse.save();
       return res.status(200).json({
         etimsResponse: txResponse,
         transaction: newTransaction,
