@@ -791,22 +791,18 @@ class EtimsController {
   async fetchTransactions(req, res) {
     try {
       const { role } = req.user;
-      let transactions;
+
       let txResponse;
       if (role === "Superadmin") {
-        transactions = await transactionsDb.Transactions.find({});
-        txResponse = await transactionsDb.TxResponse.find({});
-      } else {
-        transactions = await transactionsDb.Transactions.find({
-          organization: req.user.organization_id,
+        txResponse = await transactionsDb.TxResponse.find({}).sort({
+          dateSent: -1,
         });
+      } else {
         txResponse = await transactionsDb.TxResponse.find({
           organization: req.user.organization_id,
-        });
+        }).sort({ dateSent: -1 });
       }
-      return res
-        .status(200)
-        .json({ transactions: transactions, response: txResponse });
+      return res.status(200).json({ response: txResponse });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
