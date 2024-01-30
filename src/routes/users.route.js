@@ -13,7 +13,7 @@ usersRouter.patch("/password/update", authenticateJWT, (req, res) => {
 usersRouter.post("/login", (req, res) => {
   userController.userLogin(req, res);
 });
-usersRouter.get("/users", (req, res) => {
+usersRouter.get("/fetch", authenticateJWT, (req, res) => {
   userController.fetchUsers(req, res);
 });
 export default usersRouter;

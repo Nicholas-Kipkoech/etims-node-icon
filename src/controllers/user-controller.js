@@ -1,4 +1,4 @@
-import users from "../databases/users.js";
+import UsersDTO from "../databases/users.js";
 import { validateUserLogin } from "../middlewares/validation.js";
 import createToken from "../utils/jwt.js";
 import passHash from "../utils/passHash.js";
@@ -8,19 +8,19 @@ class UserController {
   async createSuperAdmin(req, res) {
     try {
       const { name, email, password, dob, phone_number } = req.body;
-      const existingUser = await users.Superadmin.findOne({ email: email });
+      const existingUser = await UsersDTO.Superadmin.findOne({ email: email });
       if (existingUser) {
         return res.status(400).json({ error: `${email} already exists!` });
       }
       const hashPass = await passHash.encrypt(password);
-      const newSuperAdmin = new users.Superadmin({
+      const newSuperAdmin = new UsersDTO.Superadmin({
         email,
         password: hashPass,
         name,
         phone_number,
         dob,
       });
-      await users.User.create({
+      await UsersDTO.User.create({
         name: newSuperAdmin.name,
         userId: newSuperAdmin._id,
         role: newSuperAdmin.role,
@@ -43,7 +43,7 @@ class UserController {
       if (error) {
         return res.status(400).json({ error: error.message });
       }
-      const user = await users.User.findOne({ email: email });
+      const user = await UsersDTO.User.findOne({ email: email });
       if (!user) {
         return res.status(400).json({ error: `${email} doesn't exist!!` });
       }
@@ -76,7 +76,7 @@ class UserController {
       const { email } = req.user; // Assuming the user's email is in the req.user object
       const { name, newPassword } = req.body;
       // Fetch the user from the database
-      const user = await users.User.findOne({ email });
+      const user = await UsersDTO.User.findOne({ email });
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -105,10 +105,16 @@ class UserController {
 
   async fetchUsers(req, res) {
     try {
-      const _users = await users.User.find({});
-      if (_users) {
-        return res.status(200).json({ _users });
+      const { role } = req.user;
+      let users;
+      if (role === "Superadmin") {
+        users = await UsersDTO.User.find({});
+      } else {
+        users = await UsersDTO.User.find({
+          organization_id: req.user.organization_id,
+        });
       }
+      return res.status(200).json({ users });
     } catch (error) {
       console.error(error);
       return res.status(400).json(error);
