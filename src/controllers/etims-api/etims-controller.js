@@ -802,11 +802,20 @@ class EtimsController {
 
   async fetchTransactions(req, res) {
     try {
+      const { role } = req.user;
       let transactions;
       let txResponse;
-      transactions = await transactionsDb.Transactions.find({});
-      txResponse = await transactionsDb.TxResponse.find({});
-
+      if (role === "Superadmin") {
+        transactions = await transactionsDb.Transactions.find({});
+        txResponse = await transactionsDb.TxResponse.find({});
+      } else {
+        transactions = await transactionsDb.Transactions.find({
+          organization: req.user.organization_id,
+        });
+        txResponse = await transactionsDb.TxResponse.find({
+          organization: req.user.organization_id,
+        });
+      }
       return res
         .status(200)
         .json({ transactions: transactions, response: txResponse });
@@ -815,112 +824,22 @@ class EtimsController {
       return res.status(500).json(error);
     }
   }
-  async fetchTransactionsByOrganizationID(req, res) {
-    try {
-      const { organizationID } = req.params;
-      const organization = await OrganizationDTO.Organization.findById(
-        organizationID
-      );
 
-      const transaction = await transactionsDb.Transactions.find({
-        organization: organization._id,
-      });
-
-      const transactionResponse = await transactionsDb.TxResponse.find({
-        organization: organization._id,
-      });
-
-      // Check if either transaction or transactionResponse is null
-      if (!transaction || !transactionResponse) {
-        // Return an empty array or handle the empty case as needed
-        return res.status(200).json({
-          transaction: [],
-          transactionResponse: [],
-        });
-      }
-
-      return res.status(200).json({
-        transaction: transaction,
-        transactionResponse: transactionResponse,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json(error);
-    }
-  }
   async openSaveTransSales(req, res) {
     try {
       const payload = req.body;
-      const request_id = payload?.invcNo;
-      const bimaTransactionPayload = new transactionsDb.BimaTransaction({
-        requestID: request_id,
-        request: JSON.stringify(payload),
-        message: "Recieved response from BIMA",
-        response: null,
-      });
-      await bimaTransactionPayload.save();
-
-      const apiRequestLog = new transactionsDb.ApiLog({
-        request_type: "sales transaction request",
-        status: "Pending",
-        request: JSON.stringify(payload),
-      });
-      await apiRequestLog.save();
 
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
         cmcKey: payload.cmcKey,
         tin: payload.tin,
         bhfId: payload.bhfId,
       });
-      // save response from KRA
-      const bimaTransactionEtimsResponse = new transactionsDb.BimaTransaction({
-        requestID: bimaTransactionPayload?.requestID,
-        request: bimaTransactionPayload?.request,
-        message: "Recieved response from ETIMS",
-        response: JSON.stringify(data),
-        created_at: Date.now(),
-      });
-      await bimaTransactionEtimsResponse.save();
-      // api response log from etims
-      const apiResponseLog = new transactionsDb.ApiLog({
-        request_type: "sales transaction response",
-        status: "Recieved",
-        request: JSON.stringify(data),
-      });
+
       await apiResponseLog.save();
       return res.status(200).json({ response: data });
     } catch (error) {
-      const apiErrorLog = new transactionsDb.ApiLog({
-        request_type: "Sales transaction error",
-        status: "Error",
-        request: JSON.stringify(error),
-      });
-      await apiErrorLog.save();
       console.error("Error in openSaveTransSales:", error);
       return res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async fetchApiLogs(req, res) {
-    try {
-      const infoLogs = await transactionsDb.ApiLog.find({}).exec();
-      if (infoLogs) {
-        return res.status(200).json({ apiLogs: infoLogs });
-      }
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  }
-  async fetchBimaTransactions(req, res) {
-    try {
-      const bimaTransactions = await transactionsDb.BimaTransaction.find(
-        {}
-      ).exec();
-      if (bimaTransactions) {
-        return res.status(200).json({ bimaTransactions: bimaTransactions });
-      }
-    } catch (error) {
-      return res.status(500).json(error);
     }
   }
 }

@@ -75,23 +75,10 @@ etimsAPIRouter.post("/insertStockIO", (req, res) => {
 etimsAPIRouter.post("/saveTrnsSale", (req, res) => {
   etimsController.openSaveTransSales(req, res);
 });
-etimsAPIRouter.get("/fetch-transactions", (req, res) => {
+etimsAPIRouter.get("/fetch-transactions", authenticateJWT, (req, res) => {
   etimsController.fetchTransactions(req, res);
 });
 
-etimsAPIRouter.get(
-  "/fetch-transactions/:organizationID",
-  // authenticateJWT,
-  (req, res) => {
-    etimsController.fetchTransactionsByOrganizationID(req, res);
-  }
-);
-etimsAPIRouter.get("/apiLogs", (req, res) => {
-  etimsController.fetchApiLogs(req, res);
-});
-etimsAPIRouter.get("/bimaTxs", (req, res) => {
-  etimsController.fetchBimaTransactions(req, res);
-});
 etimsAPIRouter.get("/notifications", (req, res) => {
   etimsController.fetchNotifications(req, res);
 });
