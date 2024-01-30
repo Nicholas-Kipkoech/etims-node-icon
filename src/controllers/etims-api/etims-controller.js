@@ -816,8 +816,13 @@ class EtimsController {
       const txResponse = await transactionsDb.TxResponse.find(
         txResponseQuery
       ).sort({ dateSent: -1 });
+      const transactions = await transactionsDb.Transactions.find(
+        txResponseQuery
+      ).sort({ dateSent: -1 });
 
-      return res.status(200).json({ response: txResponse });
+      return res
+        .status(200)
+        .json({ response: txResponse, transactions: transactions });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
