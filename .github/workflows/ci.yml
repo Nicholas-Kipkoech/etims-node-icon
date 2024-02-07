@@ -1,23 +1,32 @@
+name: Deploy to DigitalOcean
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  ci:
+  deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Test
-        run: |
-          yarn install
-          
 
-      - name: Deploy
-        # Only run this step if the branch is main
-        if: github.ref == 'refs/heads/main'
-        env:
-          deploy_url: ${{ secrets.DEPLOY_URL }}
-        run: |
-          curl "$deploy_url"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to DigitalOcean Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /path/to/your/application
+            git pull origin main
+            npm install --production
+            pm2 restart your-app-name
