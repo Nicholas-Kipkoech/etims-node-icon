@@ -59,6 +59,30 @@ class UserController {
     }
   }
 
+  async updateSuperAdmin(req, res) {
+    try {
+      const { email } = req.params;
+      const superadmin = await UsersDTO.Superadmin.findOneAndUpdate(
+        { email },
+        req.body,
+        { new: true }
+      );
+      const user = await UsersDTO.User.findOne({ email: superadmin.email });
+      if (user) {
+        user.name = superadmin.name;
+      }
+      await user.save();
+      await superadmin.save();
+      return res.status(200).json({
+        message: "superadmin updated successfully!",
+        user: superadmin,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(200).json(error);
+    }
+  }
+
   async userLogin(req, res) {
     try {
       const { password, email } = req.body;

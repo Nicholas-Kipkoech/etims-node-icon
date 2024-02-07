@@ -10,6 +10,9 @@ usersRouter.post("/superadmin/create", (req, res) => {
 usersRouter.get("/superadmin/fetch/:email", (req, res) => {
   userController.fetchSuperAdmin(req, res);
 });
+usersRouter.patch("/superadmin/update/:email", (req, res) => {
+  userController.updateSuperAdmin(req, res);
+});
 usersRouter.patch("/password/update", authenticateJWT, (req, res) => {
   userController.updateUserPassword(req, res);
 });
