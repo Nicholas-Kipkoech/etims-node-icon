@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 const superadminSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
+  title: { type: String },
+  company: { type: String },
+  about: { type: String },
   role: {
     type: String,
     default: "Superadmin",

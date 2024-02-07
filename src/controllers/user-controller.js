@@ -7,7 +7,16 @@ class UserController {
   constructor() {}
   async createSuperAdmin(req, res) {
     try {
-      const { name, email, password, dob, phone_number } = req.body;
+      const {
+        name,
+        email,
+        title,
+        about,
+        company,
+        password,
+        dob,
+        phone_number,
+      } = req.body;
       const existingUser = await UsersDTO.Superadmin.findOne({ email: email });
       if (existingUser) {
         return res.status(400).json({ error: `${email} already exists!` });
@@ -15,6 +24,9 @@ class UserController {
       const hashPass = await passHash.encrypt(password);
       const newSuperAdmin = new UsersDTO.Superadmin({
         email,
+        title,
+        about,
+        company,
         password: hashPass,
         name,
         phone_number,
@@ -35,6 +47,18 @@ class UserController {
       return res.status(200).json(error);
     }
   }
+
+  async fetchSuperAdmin(req, res) {
+    try {
+      const { email } = req.params;
+      const superadmin = await UsersDTO.Superadmin.findOne({ email: email });
+      return res.status(200).json({ superadmin });
+    } catch (error) {
+      console.error(error);
+      return res.status(200).json(error);
+    }
+  }
+
   async userLogin(req, res) {
     try {
       const { password, email } = req.body;
