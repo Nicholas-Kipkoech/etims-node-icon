@@ -14,11 +14,15 @@ const app = express();
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "*", // Allow requests from this origin
-  })
-);
+app.use(function (request, response, next) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 const port = process.env.PORT;
 
 const server = app.listen(port, () =>
