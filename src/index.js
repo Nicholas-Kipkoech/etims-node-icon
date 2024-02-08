@@ -13,7 +13,12 @@ connectToDb();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from this origin
+  })
+);
 const port = process.env.PORT;
 
 const server = app.listen(port, () =>
