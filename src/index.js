@@ -14,15 +14,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use(function (request, response, next) {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
+app.use(cors());
 const port = process.env.PORT;
 
 const server = app.listen(port, () =>
@@ -51,7 +43,7 @@ io.on("connection", (socket) => {
 });
 
 app.get("/", (req, res) => {
-  return res.status(200).json({ message: "API is live in production...." });
+  return res.status(200).json({ message: "API is live...." });
 });
 
 app.use("/api/user", usersRouter);
