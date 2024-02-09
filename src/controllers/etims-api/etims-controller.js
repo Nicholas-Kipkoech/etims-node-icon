@@ -409,21 +409,27 @@ class EtimsController {
         receipt,
         itemList,
         clientKey,
+        organizationId,
       } = req.body;
 
+      let organization;
       const client_key = await OrganizationDTO.APICredentials.findOne({
         clientKey: clientKey,
       });
-      if (!client_key) {
-        return res.status(404).json({ error: "Client key not found" });
+      if (client_key) {
+        organization = await OrganizationDTO.Organization.findById(
+          client_key.organization
+        );
+      } else if (organizationId) {
+        organization = await OrganizationDTO.Organization.findById(
+          organizationId
+        );
+      } else {
+        return res
+          .status(400)
+          .json({ error: "Please provide client key or organization id!" });
       }
 
-      const organization = await OrganizationDTO.Organization.findById(
-        client_key.organization
-      );
-      if (!organization) {
-        return res.status(404).json({ error: "Organization doesn't exist" });
-      }
       const payload = {
         trdInvcNo,
         invcNo,
@@ -472,7 +478,7 @@ class EtimsController {
 
       let newTransaction;
       const credentials = await OrganizationDTO.ETIMSCredentials.findOne({
-        organizationId: organization._id,
+        organizationId: organizationId,
       });
 
       const transactionID = generateRandom8DigitNumber().toString();
