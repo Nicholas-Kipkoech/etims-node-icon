@@ -122,14 +122,14 @@ class UserController {
   async updateUserPassword(req, res) {
     try {
       const { email } = req.user; // Assuming the user's email is in the req.user object
-      const { name, newPassword } = req.body;
+      const { newPassword } = req.body;
       // Fetch the user from the database
       const user = await UsersDTO.User.findOne({ email });
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
       // Update the user's information
-      user.name = name;
+
       // If a new password is provided, update the password
       if (newPassword) {
         user.password = await passHash.encrypt(newPassword);
