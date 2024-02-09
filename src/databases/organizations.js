@@ -16,9 +16,19 @@ const organizationAPICredentials = new mongoose.Schema({
   created_at: { type: Date, default: Date.now() },
 });
 
+const etimsCredentials = new mongoose.Schema({
+  organizationId: { type: String },
+  pin: { type: String },
+  branchId: { type: String },
+  taxpayerName: { type: String },
+  cmcKey: { type: String },
+  createdAt: { type: Date, default: Date.now() },
+});
+
 const Organization = mongoose.model("Organization", organizationSchema);
 const APICredentials = mongoose.model(
   "APICredentials",
   organizationAPICredentials
 );
-export default { Organization, APICredentials };
+const ETIMSCredentials = mongoose.model("ETIMSCredentials", etimsCredentials);
+export default { Organization, APICredentials, ETIMSCredentials };

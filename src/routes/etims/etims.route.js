@@ -83,4 +83,8 @@ etimsAPIRouter.get("/notifications", authenticateJWT, (req, res) => {
   etimsController.fetchNotifications(req, res);
 });
 
+etimsAPIRouter.get("/fetch-credentials/:organizationId", (req, res) => {
+  etimsController.fetchEtimsCred(req, res);
+});
+
 export default etimsAPIRouter;

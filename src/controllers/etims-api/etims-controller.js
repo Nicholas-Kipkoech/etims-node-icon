@@ -10,7 +10,6 @@ config();
 class EtimsController {
   constructor() {
     this.apiUrl = process.env.ETIMS_URL;
-    this.ngrok_url = "https://6d7e-105-27-207-82.ngrok-free.app";
     this.defaultHeaders = {
       cmcKey: process.env.CMCKEY,
       tin: process.env.TIN,
@@ -34,12 +33,26 @@ class EtimsController {
   }
   async initializeDevice(req, res) {
     try {
-      const { dvcSrlNo, tin, bhfId } = req.body;
-      const response = await axios.post(`${this.apiUrl}/selectInitOsdcInfo`, {
-        dvcSrlNo: dvcSrlNo,
-        tin: tin,
-        bhfId: bhfId,
+      const { dvcSrlNo, tin, bhfId, organizationId } = req.body;
+
+      const { data: response } = await axios.post(
+        `${this.apiUrl}/selectInitOsdcInfo`,
+        {
+          dvcSrlNo: dvcSrlNo,
+          tin: tin,
+          bhfId: bhfId,
+        }
+      );
+      const newDevice = new OrganizationDTO.ETIMSCredentials({
+        organizationId: organizationId,
+        pin: response.data.info.tin,
+        branchId: response.data.info.bhfId,
+        taxpayerName: response.data.info.taxprNm,
+        cmcKey: response.data.info.cmcKey,
+        createdAt: Date.now(),
       });
+      await newDevice.save();
+
       const notification = new transactionsDb.Notification({
         from: "Device Initialization",
         message: "Device has been initialized!!!",
@@ -47,27 +60,9 @@ class EtimsController {
       });
       await notification.save();
       io.emit("notification");
-
-      await this.returnResponse(response.data);
       return res.status(200).json(response.data);
     } catch (error) {
       return res.status(500).json(error);
-    }
-  }
-
-  async returnResponse(payload) {
-    console.log(payload);
-    try {
-      // sendCustomEmail(
-      //   "ckipkorir@iconsoft.co",
-      //   "KRA CREDENTIALS",
-      //   payload.data?.info.cmcKey,
-      //   payload.data?.info.tin
-      // );
-      console.log("request sent to BIMA");
-      console.log("Response from server:");
-    } catch (error) {
-      console.error(error);
     }
   }
 
@@ -476,11 +471,15 @@ class EtimsController {
       };
 
       let newTransaction;
+      const credentials = await OrganizationDTO.ETIMSCredentials.findOne({
+        organizationId: organization._id,
+      });
+
       const transactionID = generateRandom8DigitNumber().toString();
       const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
-        cmcKey: process.env.CMCKEY,
-        tin: process.env.TIN,
-        bhfId: process.env.BHFID,
+        cmcKey: credentials.cmcKey,
+        tin: credentials.pin,
+        bhfId: credentials.branchId,
       });
 
       if (data && data.resultCd === "000") {
@@ -844,6 +843,18 @@ class EtimsController {
     } catch (error) {
       console.error("Error in openSaveTransSales:", error);
       return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  async fetchEtimsCred(req, res) {
+    try {
+      const { organizationId } = req.params;
+      const credentials = await OrganizationDTO.ETIMSCredentials.findOne({
+        organizationId: organizationId,
+      });
+      return res.status(200).json({ credentials });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
     }
   }
 }
