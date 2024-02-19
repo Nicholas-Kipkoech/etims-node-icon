@@ -44,7 +44,7 @@ class EtimsController {
         }
       );
       const newDevice = new OrganizationDTO.ETIMSCredentials({
-        organizationId: organizationId,
+        organizationId: "65d31486c79ad4870755c0c8",
         pin: response.data.info.tin,
         branchId: response.data.info.bhfId,
         taxpayerName: response.data.info.taxprNm,

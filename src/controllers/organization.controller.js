@@ -12,7 +12,7 @@ import {
   generateRandom8DigitNumber,
 } from "../utils/helpers.js";
 import passHash from "../utils/passHash.js";
-import { sendCustomEmail, sendEmail } from "../utils/sendEmail.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import EtimsItemsDb from "../databases/ETIMS-items.js";
 
 class OrganizationController {
