@@ -7,7 +7,7 @@ businessRouter.post("/create", (req, res) => {
   businessController.createBusiness(req, res);
 });
 
-businessRouter.get("/create", (req, res) => {
+businessRouter.get("/fetch/:organizationId", (req, res) => {
   businessController.fetchBusiness(req, res);
 });
 

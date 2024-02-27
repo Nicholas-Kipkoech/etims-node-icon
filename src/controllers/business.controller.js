@@ -11,6 +11,7 @@ class BusinessController {
       if (organization) {
         const new_business = new Business({
           organization: organization,
+          pin,
           businessName,
           businessType,
           created_at: Date.now(),
