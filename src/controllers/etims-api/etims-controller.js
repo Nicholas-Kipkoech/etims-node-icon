@@ -3,7 +3,6 @@ import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
 import OrganizationDTO from "../../databases/organizations.js";
-import { io } from "../../index.js";
 
 config();
 
@@ -52,14 +51,6 @@ class EtimsController {
         createdAt: Date.now(),
       });
       await newDevice.save();
-
-      const notification = new transactionsDb.Notification({
-        from: "Device Initialization",
-        message: "Device has been initialized!!!",
-        send_date: Date.now(),
-      });
-      await notification.save();
-      io.emit("notification");
       return res.status(200).json(response.data);
     } catch (error) {
       return res.status(500).json(error);
@@ -564,14 +555,6 @@ class EtimsController {
       });
       await txResponse.save();
 
-      const newNotification = new transactionsDb.Notification({
-        organization: organization._id,
-        from: organization.organization_name,
-        message: `A new invoice has been submitted: invoice number ${newTransaction?.invcNo}`,
-        send_date: Date.now(),
-      });
-      io.emit("notification");
-      await newNotification.save();
       return res.status(200).json({
         etimsResponse: txResponse,
         transaction: newTransaction,

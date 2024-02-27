@@ -1,5 +1,4 @@
 import OrganizationDTO from "../databases/organizations.js";
-import users from "../databases/users.js";
 
 import {
   generateOrganizationAPIKey,
@@ -7,7 +6,6 @@ import {
 } from "../utils/helpers.js";
 import passHash from "../utils/passHash.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import EtimsItemsDb from "../databases/ETIMS-items.js";
 
 class OrganizationController {
   constructor() {}
