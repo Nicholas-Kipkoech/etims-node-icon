@@ -1,5 +1,5 @@
 import { validateUserAccount } from "../middlewares/validation.js";
-import UserDTO from "../databases/users.js";
+import User from "../databases/users.js";
 import passHash from "../utils/passHash.js";
 import createToken from "../utils/jwt.js";
 import { sendEmail } from "../utils/sendEmail.js";
@@ -19,7 +19,7 @@ class UserController {
         isVerified,
       } = req.body;
 
-      const user = await UserDTO.User.findOne({ email: email });
+      const user = await User({ email: email });
       if (user) {
         return res.status(404).json({ error: `${email} already exist!` });
       }
@@ -28,7 +28,7 @@ class UserController {
         return res.status(400).json({ error: error.message });
       }
       const hashPassword = await passHash.encrypt(password);
-      const new_user = new UserDTO.User({
+      const new_user = new User({
         firstName,
         lastName,
         role,
@@ -54,7 +54,7 @@ class UserController {
   async userLogin(req, res) {
     try {
       const { email, password } = req.body;
-      const user = await UserDTO.User.findOne({ email: email });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(404).json({ error: `${email} doesn't exist!` });
       }
@@ -84,7 +84,7 @@ class UserController {
     try {
       const { password } = req.body;
       const { email } = req.user;
-      const user = await UserDTO.User.findOne({ email: email });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(404).json({ error: "User not found!" });
       }
