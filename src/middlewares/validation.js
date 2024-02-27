@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { join } from "path";
 
 export const validateUserAccount = (userAccountRequest) => {
   const userRegistrationSchema = Joi.object({
