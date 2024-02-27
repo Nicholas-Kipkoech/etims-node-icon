@@ -6,27 +6,25 @@ config();
 const jwt_secret = process.env.JWT_SECRET;
 
 const createToken = (
+  firstName,
+  lastName,
   email,
   role,
-  name,
-  business_class,
-  organization_id,
-  business_family,
-  business_segment
+  phoneNumber,
+  isVerified
 ) => {
   const token = jwt.sign(
     {
-      name: name,
-      role: role,
-      email: email,
-      organization_id: organization_id,
-      business_class: business_class,
-      business_segment: business_segment,
-      business_family: business_family,
+      firstName,
+      lastName,
+      email,
+      role,
+      phoneNumber,
+      isVerified,
     },
     jwt_secret,
     {
-      expiresIn: "24h",
+      expiresIn: "36h",
     }
   );
   return token;
