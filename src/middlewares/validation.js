@@ -5,6 +5,9 @@ export const validateUserAccount = (userAccountRequest) => {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     phoneNumber: Joi.string().required(),
+    role: Joi.string(),
+    isVerified: Joi.boolean(),
+    password: Joi.string().required(),
     email: Joi.string().email().required(),
   });
   return userRegistrationSchema.validate(userAccountRequest);

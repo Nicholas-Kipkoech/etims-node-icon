@@ -13,14 +13,8 @@ class OrganizationController {
   constructor() {}
   async createOrganization(req, res) {
     try {
-      const {
-        organization_email,
-        organization_name,
-        organization_phone,
-        business_segment,
-        business_family,
-        business_class,
-      } = req.body;
+      const { organization_email, organization_name, organization_phone } =
+        req.body;
       const { error } = validateOrg(req.body);
       if (error) {
         return res.status(400).json({ error: error.message });
@@ -38,9 +32,6 @@ class OrganizationController {
         organization_email,
         organization_name,
         organization_phone,
-        business_segment,
-        business_family,
-        business_class,
       });
 
       const generatedKey = generateOrganizationAPIKey();

@@ -2,14 +2,22 @@ import { validateUserAccount } from "../middlewares/validation.js";
 import UserDTO from "../databases/users.js";
 import passHash from "../utils/passHash.js";
 import createToken from "../utils/jwt.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 class UserController {
   constructor() {}
 
   async createUser(req, res) {
     try {
-      const { firstName, lastName, email, password, role, phoneNumber } =
-        req.body;
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+        phoneNumber,
+        isVerified,
+      } = req.body;
 
       const user = await UserDTO.User.findOne({ email: email });
       if (user) {
@@ -30,6 +38,12 @@ class UserController {
         isVerified,
         created_at: Date.now(),
       });
+      sendEmail(
+        new_user?.firstName,
+        new_user?.lastName,
+        new_user?.email,
+        "Account creation"
+      );
       await new_user.save();
       return res.status(200).json({ message: "User created successfully!" });
     } catch (error) {

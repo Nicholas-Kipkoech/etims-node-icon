@@ -9,24 +9,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = (to, subject, password, organization, clientKey) => {
+export const sendEmail = (firstName, secondName, to, subject) => {
   const htmlTemplate = `
-    <div style={{font-size:16px}}>
-      <p>Hello ${to}, Your account was successfully created for <strong>${organization}</strong>.</p>
-      <p>Your one-time login credentials are:</p>
-      <ul>
-        <li><strong>Email:</strong> ${to}</li>
-        <li><strong>Password:</strong> ${password}</li>
-      </ul>
-
-      <p> Your generated API credentials are as follows, 
-      this will be used for making an API calls to our service</p>
-
-      <ul>
-        <li><strong>CLIENT KEY:</strong> ${clientKey}</li>
-      </ul>
-
-      <p>Please login and update your password as soon as possible using the link below:</p>
+    <div style={{font-size:20px}}>
+       <p> Hello ${firstName} ${secondName}: </p> </br>
+      <p>Welcome to ICON Tax, Your account was successfully created</strong>.</p>
       <a href="https://icon-x-kra.vercel.app">Login Link</a>
     </div>
   `;
