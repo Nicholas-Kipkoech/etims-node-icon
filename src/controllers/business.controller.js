@@ -1,4 +1,4 @@
-import Business from "../databases/business";
+import Business from "../databases/business.js";
 import Organization from "../databases/organizations.js";
 class BusinessController {
   constructor() {}

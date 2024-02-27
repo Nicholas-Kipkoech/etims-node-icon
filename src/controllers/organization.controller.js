@@ -8,6 +8,12 @@ class OrganizationController {
       const { organization_name, organization_type } = req.body;
       const { email } = req.user;
       const user = await User.findOne({ email: email });
+      const existing_org = await Organization.findOne({
+        organization_name: organization_name,
+      });
+      if (existing_org) {
+        return res.status(400).json({ error: "organization already exists!" });
+      }
       const new_org = new Organization({
         user: user,
         organization_name,

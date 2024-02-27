@@ -19,7 +19,7 @@ class UserController {
         isVerified,
       } = req.body;
 
-      const user = await User({ email: email });
+      const user = await User.findOne({ email: email });
       if (user) {
         return res.status(404).json({ error: `${email} already exist!` });
       }
