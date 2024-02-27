@@ -1,34 +1,15 @@
 import mongoose from "mongoose";
 
-const superadminSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  title: { type: String },
-  company: { type: String },
-  about: { type: String },
-  role: {
-    type: String,
-    default: "Superadmin",
-  },
-  password: { type: String, required: true },
-  created_at: { type: Date, default: Date.now() },
-});
-
 const userSchema = new mongoose.Schema({
-  userId: { type: String },
-  name: { type: String },
+  firstName: { type: String },
+  lastName: { type: String },
   email: { type: String },
   password: { type: String },
   role: { type: String },
-  organization_id: { type: String },
-  business_class: { type: String },
-  business_segment: { type: String },
-  business_family: { type: String },
+  isVerified: { type: Boolean, default: false },
   created_at: { type: Date },
 });
 
-const Superadmin = mongoose.model("Superadmin", superadminSchema);
-
 const User = mongoose.model("User", userSchema);
 
-export default { Superadmin, User };
+export default { User };
