@@ -1,12 +1,15 @@
-import Organization from "../databases/organizations";
+import Organization from "../databases/organizations.js";
+import User from "../databases/users.js";
 
 class OrganizationController {
   constructor() {}
   async createOrganization(req, res) {
     try {
       const { organization_name, organization_type } = req.body;
-
+      const { email } = req.user;
+      const user = await User.findOne({ email: email });
       const new_org = new Organization({
+        user: user,
         organization_name,
         organization_type,
         created_at: Date.now(),

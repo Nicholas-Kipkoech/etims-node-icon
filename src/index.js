@@ -5,6 +5,7 @@ import cors from "cors";
 import etimsAPIRouter from "./routes/etims/etims.route.js";
 import { connectToDb } from "./config/db.js";
 import organizationRouter from "./routes/organization.route.js";
+import businessRouter from "./routes/business.route.js";
 
 config();
 connectToDb();
@@ -15,9 +16,7 @@ app.use(express.json());
 app.use(cors());
 const port = process.env.PORT;
 
-const server = app.listen(port, () =>
-  console.log(`Server is running at port ${port}`)
-);
+app.listen(port, () => console.log(`Server is running at port ${port}`));
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "API is live...." });
@@ -26,3 +25,4 @@ app.get("/", (req, res) => {
 app.use("/api/user", usersRouter);
 app.use("/api/organization", organizationRouter);
 app.use("/api/etims", etimsAPIRouter);
+app.use("/api/business", businessRouter);
