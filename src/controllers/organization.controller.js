@@ -30,7 +30,10 @@ class OrganizationController {
 
   async fetchOrganizations(req, res) {
     try {
-      const registered_organizations = await Organization.find({});
+      const { userId } = req.user;
+      const registered_organizations = await Organization.find({
+        user: userId,
+      });
       if (registered_organizations) {
         return res.status(200).json({ registered_organizations });
       }

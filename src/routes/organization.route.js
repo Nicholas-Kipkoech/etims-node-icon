@@ -7,7 +7,7 @@ const organizationRouter = Router();
 organizationRouter.post("/create", authenticateJWT, (req, res) => {
   organizationController.createOrganization(req, res);
 });
-organizationRouter.get("/fetch", (req, res) => {
+organizationRouter.get("/fetch", authenticateJWT, (req, res) => {
   organizationController.fetchOrganizations(req, res);
 });
 

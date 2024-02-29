@@ -63,6 +63,7 @@ class UserController {
         return res.status(401).json({ error: "Invalid password! " });
       }
       const token = createToken(
+        user._id,
         user.firstName,
         user.lastName,
         user.email,

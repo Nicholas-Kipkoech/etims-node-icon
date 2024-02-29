@@ -6,6 +6,7 @@ config();
 const jwt_secret = process.env.JWT_SECRET;
 
 const createToken = (
+  userId,
   firstName,
   lastName,
   email,
@@ -15,6 +16,7 @@ const createToken = (
 ) => {
   const token = jwt.sign(
     {
+      userId,
       firstName,
       lastName,
       email,
