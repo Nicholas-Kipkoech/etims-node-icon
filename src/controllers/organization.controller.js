@@ -6,8 +6,8 @@ class OrganizationController {
   async createOrganization(req, res) {
     try {
       const { organization_name, organization_type } = req.body;
-      const { email } = req.user;
-      const user = await User.findOne({ email: email });
+      const { userId } = req.user;
+      const user = await User.findById(userId);
       const existing_org = await Organization.findOne({
         organization_name: organization_name,
       });
