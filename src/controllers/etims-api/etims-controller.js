@@ -3,6 +3,8 @@ import { config } from "dotenv";
 import { generateRandom8DigitNumber } from "../../utils/helpers.js";
 import transactionsDb from "../../databases/transactions.js";
 import OrganizationDTO from "../../databases/organizations.js";
+import ETIMSheaders from "../../databases/ETIMS-headers.js";
+import Business from "../../databases/business.js";
 
 config();
 
@@ -15,14 +17,29 @@ class EtimsController {
       bhfId: process.env.BHFID,
     };
   }
-  async makeApiRequest(endpoint, requestData, headers) {
+
+  async getEtimsHeaders(businessId) {
+    try {
+      const etimsHeaders = await ETIMSheaders.findOne({ business: businessId });
+      if (etimsHeaders) {
+        return {
+          cmcKey: etimsHeaders.cmcKey,
+          pin: etimsHeaders.pin,
+          bhfId: etimsHeaders.bhfId,
+        };
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async makeApiRequest(endpoint, requestData) {
     try {
       const payload = {
         ...requestData,
       };
-
       const response = await axios.post(`${this.apiUrl}/${endpoint}`, payload, {
-        headers: headers,
+        headers: this.defaultHeaders,
       });
       return response.data;
     } catch (error) {
@@ -32,7 +49,9 @@ class EtimsController {
   }
   async initializeDevice(req, res) {
     try {
-      const { dvcSrlNo, tin, bhfId, organizationId } = req.body;
+      const { dvcSrlNo, tin, bhfId } = req.body;
+      const { businessId } = req.params;
+      const business = await Business.findById(businessId);
 
       const { data: response } = await axios.post(
         `${this.apiUrl}/selectInitOsdcInfo`,
@@ -42,15 +61,15 @@ class EtimsController {
           bhfId: bhfId,
         }
       );
-      const newDevice = new OrganizationDTO.ETIMSCredentials({
-        organizationId: "65d31486c79ad4870755c0c8",
-        pin: response.data.info.tin,
-        branchId: response.data.info.bhfId,
-        taxpayerName: response.data.info.taxprNm,
-        cmcKey: response.data.info.cmcKey,
+      const etimsHeaders = new ETIMSheaders({
+        business: business,
+        cmcKey: response?.data.info.cmcKey,
+        pin: response?.data.info.tin,
+        bhfId: response?.data.info.bhfId,
+        companyName: response?.data.info.taxprNm,
         createdAt: Date.now(),
       });
-      await newDevice.save();
+      await etimsHeaders.save();
       return res.status(200).json(response.data);
     } catch (error) {
       return res.status(500).json(error);
@@ -59,18 +78,10 @@ class EtimsController {
 
   async getCodeList(req, res) {
     try {
-      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectCodeList",
-        {
-          lastReqDt: lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const { lastReqDt } = req.body;
+      const data = await this.makeApiRequest("selectCodeList", {
+        lastReqDt: lastReqDt,
+      });
       return res.status(200).json(data);
     } catch (error) {
       console.error(error);
@@ -81,17 +92,9 @@ class EtimsController {
   async selectCustomerReq(req, res) {
     try {
       const { custmTin, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectCustomer",
-        {
-          custmTin: custmTin,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectCustomer", {
+        custmTin: custmTin,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -101,17 +104,9 @@ class EtimsController {
   async noticeSearchReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectNoticeList",
-        {
-          lastReqDt: lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectNoticeList", {
+        lastReqDt: lastReqDt,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -121,17 +116,9 @@ class EtimsController {
   async itemClsSearchReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectItemClsList",
-        {
-          lastReqDt: lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectItemClsList", {
+        lastReqDt: lastReqDt,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -140,11 +127,7 @@ class EtimsController {
   }
   async itemSaveReq(req, res) {
     try {
-      const data = await this.makeApiRequest("saveItem", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("saveItem", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -153,11 +136,7 @@ class EtimsController {
   }
   async saveItemComposition(req, res) {
     try {
-      const data = await this.makeApiRequest("saveItemComposition", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("saveItemComposition", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -168,17 +147,9 @@ class EtimsController {
   async itemSearchReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectItemList",
-        {
-          lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectItemList", {
+        lastReqDt,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -189,17 +160,9 @@ class EtimsController {
   async bhfSearchReq(req, res) {
     try {
       const { lastReqDt, cmcKey, tin, bhfId } = req.body;
-      const data = await this.makeApiRequest(
-        "selectBhfList",
-        {
-          lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectBhfList", {
+        lastReqDt,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -209,30 +172,7 @@ class EtimsController {
 
   async bhfCustSaveReq(req, res) {
     try {
-      const {
-        custNo,
-        custTin,
-        custNm,
-        adrs,
-        telNo,
-        email,
-        faxNo,
-        useYn,
-        remark,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-        cmcKey,
-        tin,
-        bhfId,
-      } = req.body;
-
-      const data = await this.makeApiRequest("saveBhfCustomer", req.body, {
-        cmcKey: cmcKey,
-        tin: tin,
-        bhfId: bhfId,
-      });
+      const data = await this.makeApiRequest("saveBhfCustomer", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -272,11 +212,7 @@ class EtimsController {
         modrId,
         modrNm,
       };
-      const data = await this.makeApiRequest("saveBhfUser", payload, {
-        cmcKey: cmcKey,
-        tin: tin,
-        bhfId: bhfId,
-      });
+      const data = await this.makeApiRequest("saveBhfUser", payload);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -285,34 +221,7 @@ class EtimsController {
   }
   async bhfInsuranceSaveReq(req, res) {
     try {
-      const {
-        isrccCd,
-        isrccNm,
-        isrcRt,
-        useYn,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-        cmcKey,
-        tin,
-        bhfId,
-      } = req.body;
-      const payload = {
-        isrcRt,
-        useYn,
-        isrccCd,
-        isrccNm,
-        regrId,
-        regrNm,
-        modrId,
-        modrNm,
-      };
-      const data = await this.makeApiRequest("saveBhfInsurance", payload, {
-        cmcKey: cmcKey,
-        tin: tin,
-        bhfId: bhfId,
-      });
+      const data = await this.makeApiRequest("saveBhfInsurance", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -321,19 +230,11 @@ class EtimsController {
   }
   async importItemSearchReq(req, res) {
     try {
-      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const { lastReqDt } = req.body;
 
-      const data = await this.makeApiRequest(
-        "selectImportItemList",
-        {
-          lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
-      );
+      const data = await this.makeApiRequest("selectImportItemList", {
+        lastReqDt,
+      });
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -342,11 +243,7 @@ class EtimsController {
   }
   async importItemUpdateReq(req, res) {
     try {
-      const data = await this.makeApiRequest("updateImportItem", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("updateImportItem", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -399,27 +296,9 @@ class EtimsController {
         modrNm,
         receipt,
         itemList,
-        clientKey,
-        organizationId,
       } = req.body;
 
       let organization;
-      const client_key = await OrganizationDTO.APICredentials.findOne({
-        clientKey: clientKey,
-      });
-      if (client_key) {
-        organization = await OrganizationDTO.Organization.findById(
-          client_key.organization
-        );
-      } else if (organizationId) {
-        organization = await OrganizationDTO.Organization.findById(
-          organizationId
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ error: "Please provide client key or organization id!" });
-      }
 
       const payload = {
         trdInvcNo,
@@ -468,16 +347,9 @@ class EtimsController {
       };
 
       let newTransaction;
-      const credentials = await OrganizationDTO.ETIMSCredentials.findOne({
-        organizationId: organizationId,
-      });
 
       const transactionID = generateRandom8DigitNumber().toString();
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
-        cmcKey: credentials.cmcKey,
-        tin: credentials.pin,
-        bhfId: credentials.branchId,
-      });
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
 
       if (data && data.resultCd === "000") {
         newTransaction = await transactionsDb.Transactions.create({
@@ -608,17 +480,10 @@ class EtimsController {
 
   async trnsPurchaseSalesReq(req, res) {
     try {
-      const { lastReqDt, cmcKey, tin, bhfId } = req.body;
+      const { lastReqDt } = req.body;
       const data = await this.makeApiRequest(
         "selectTrnsPurchaseSalesList",
-        {
-          lastReqDt,
-        },
-        {
-          cmcKey: cmcKey,
-          tin: tin,
-          bhfId: bhfId,
-        }
+        lastReqDt
       );
       return res.status(200).json({ response: data });
     } catch (error) {
@@ -672,9 +537,6 @@ class EtimsController {
         receipt,
         invcNo,
         itemList,
-        cmcKey,
-        tin,
-        bhfId,
       } = req.body;
 
       const payload = {
@@ -722,11 +584,7 @@ class EtimsController {
         itemList,
       };
 
-      const data = await this.makeApiRequest("insertTrnsPurchase", payload, {
-        cmcKey: cmcKey,
-        tin: tin,
-        bhfId: bhfId,
-      });
+      const data = await this.makeApiRequest("insertTrnsPurchase", payload);
 
       return res.status(200).json({ response: data });
     } catch (error) {
@@ -737,11 +595,7 @@ class EtimsController {
 
   async saveStockMaster(req, res) {
     try {
-      const data = await this.makeApiRequest("saveStockMaster", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("saveStockMaster", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -751,11 +605,7 @@ class EtimsController {
 
   async lookupStockMaster(req, res) {
     try {
-      const data = await this.makeApiRequest("selectStockMoveList", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("selectStockMoveList", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -764,11 +614,7 @@ class EtimsController {
   }
   async saveStockIO(req, res) {
     try {
-      const data = await this.makeApiRequest("insertStockIO", req.body, {
-        cmcKey: req.body.cmcKey,
-        tin: req.body.tin,
-        bhfId: req.body.bhfId,
-      });
+      const data = await this.makeApiRequest("insertStockIO", req.body);
       return res.status(200).json({ response: data });
     } catch (error) {
       console.error(error);
@@ -821,11 +667,7 @@ class EtimsController {
     try {
       const payload = req.body;
 
-      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload, {
-        cmcKey: payload.cmcKey,
-        tin: payload.tin,
-        bhfId: payload.bhfId,
-      });
+      const data = await this.makeApiRequest("saveTrnsSalesOsdc", payload);
 
       await apiResponseLog.save();
       return res.status(200).json({ response: data });

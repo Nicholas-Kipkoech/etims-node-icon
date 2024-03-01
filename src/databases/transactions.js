@@ -100,17 +100,8 @@ const transactionResponse = new mongoose.Schema({
   sdcDateTime: { type: String },
 });
 
-const notificationSchema = new mongoose.Schema({
-  organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
-  from: { type: String },
-  message: { type: String },
-  send_date: { type: Date, default: Date.now() },
-  read_status: { type: Boolean, default: false },
-});
-
 const TxResponse = mongoose.model("TxResponse", transactionResponse);
 const Transactions = mongoose.model("Transactions", transactionSchema);
-const Notification = mongoose.model("Notification", notificationSchema);
 
 export default {
   TxResponse,
