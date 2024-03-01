@@ -105,6 +105,5 @@ const Transactions = mongoose.model("Transactions", transactionSchema);
 
 export default {
   TxResponse,
-  Notification,
   Transactions,
 };
