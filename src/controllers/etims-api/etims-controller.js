@@ -33,13 +33,14 @@ class EtimsController {
     }
   }
 
-  async makeApiRequest(endpoint, requestData) {
+  async makeApiRequest(endpoint, requestData, businessId) {
     try {
       const payload = {
         ...requestData,
       };
+      const etimsHeaders = await this.getEtimsHeaders(businessId);
       const response = await axios.post(`${this.apiUrl}/${endpoint}`, payload, {
-        headers: this.defaultHeaders,
+        headers: { ...etimsHeaders },
       });
       return response.data;
     } catch (error) {
@@ -78,10 +79,14 @@ class EtimsController {
 
   async getCodeList(req, res) {
     try {
-      const { lastReqDt } = req.body;
-      const data = await this.makeApiRequest("selectCodeList", {
-        lastReqDt: lastReqDt,
-      });
+      const { lastReqDt, businessId } = req.body;
+      const data = await this.makeApiRequest(
+        "selectCodeList",
+        {
+          lastReqDt: lastReqDt,
+        },
+        businessId
+      );
       return res.status(200).json(data);
     } catch (error) {
       console.error(error);
