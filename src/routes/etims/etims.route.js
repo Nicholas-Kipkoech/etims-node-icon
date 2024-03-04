@@ -4,7 +4,7 @@ import authenticateJWT from "../../middlewares/middleware.js";
 
 const etimsAPIRouter = Router();
 
-etimsAPIRouter.post("/initialize", (req, res) => {
+etimsAPIRouter.post("/initialize/:businessId", (req, res) => {
   etimsController.initializeDevice(req, res);
 });
 etimsAPIRouter.post("/cb", (req, res) => {
@@ -77,14 +77,6 @@ etimsAPIRouter.post("/saveTrnsSale", (req, res) => {
 });
 etimsAPIRouter.get("/fetch-transactions", authenticateJWT, (req, res) => {
   etimsController.fetchTransactions(req, res);
-});
-
-etimsAPIRouter.get("/notifications", authenticateJWT, (req, res) => {
-  etimsController.fetchNotifications(req, res);
-});
-
-etimsAPIRouter.get("/fetch-credentials/:organizationId", (req, res) => {
-  etimsController.fetchEtimsCred(req, res);
 });
 
 export default etimsAPIRouter;

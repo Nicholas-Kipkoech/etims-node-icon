@@ -36,7 +36,7 @@ const itemSchema = new mongoose.Schema({
 });
 
 const transactionSchema = mongoose.Schema({
-  organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
+  business: { type: mongoose.Types.ObjectId, ref: "Business" },
   transactionID: { type: String },
   trdInvcNo: { type: String, required: true },
   invcNo: { type: Number, required: true },
@@ -84,7 +84,7 @@ const transactionSchema = mongoose.Schema({
 });
 
 const transactionResponse = new mongoose.Schema({
-  organization: { type: mongoose.Types.ObjectId, ref: "Organization" },
+  business: { type: mongoose.Types.ObjectId, ref: "Business" },
   transactionID: { type: String },
   resultCd: { type: String },
   resultMsg: { type: String },
