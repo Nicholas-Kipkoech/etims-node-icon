@@ -72,6 +72,9 @@ etimsAPIRouter.post("/selectStockMoveList", (req, res) => {
 etimsAPIRouter.post("/insertStockIO", (req, res) => {
   etimsController.saveStockIO(req, res);
 });
+etimsAPIRouter.get("/items", (req, res) => {
+  etimsController.fetchETIMSItems(req, res);
+});
 etimsAPIRouter.post("/saveTrnsSale", (req, res) => {
   etimsController.openSaveTransSales(req, res);
 });

@@ -5,6 +5,7 @@ import transactionsDb from "../../databases/transactions.js";
 import OrganizationDTO from "../../databases/organizations.js";
 import ETIMSheaders from "../../databases/ETIMS-headers.js";
 import Business from "../../databases/business.js";
+import ETIMSItems from "../../databases/ETIMS-items.js";
 
 config();
 
@@ -688,6 +689,16 @@ class EtimsController {
         req.body.businessId
       );
       return res.status(200).json({ response: data });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  async fetchETIMSItems(req, res) {
+    try {
+      const items = await ETIMSItems.find({});
+      return res.status(200).json({ items });
     } catch (error) {
       console.error(error);
       return res.status(500).json(error);
